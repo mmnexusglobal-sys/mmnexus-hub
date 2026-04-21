@@ -22,7 +22,7 @@ Responde ÚNICAMENTE en formato JSON válido con esta estructura exacta:
   "socialCopy": "Copy persuasivo para Instagram/TikTok incluyendo hashtags relevantes.",
   "seoTags": ["tag1", "tag2", "tag3"]
 }
-No incluyas markdown (como \`\`\`json) en tu respuesta, solo el objeto JSON crudo.
+REGLA CRÍTICA: NO incluyas markdown, saludos, explicaciones previas ni razonamientos en texto. Tu respuesta debe empezar directamente con '{' y terminar con '}'.
 `;
 
 export async function POST(request: Request) {
@@ -41,9 +41,9 @@ export async function POST(request: Request) {
       const result = await model.generateContent(prompt);
       responseText = result.response.text();
     } catch (apiError: any) {
-      console.warn("Error with default model. Trying fallback model (gemini-pro)...");
+      console.warn("Error with default model. Trying fallback model (gemini-2.5-flash)...");
       try {
-        const fallbackModel = getGemmaModel("gemini-pro");
+        const fallbackModel = getGemmaModel("gemini-2.5-flash");
         const fallbackResult = await fallbackModel.generateContent(prompt);
         responseText = fallbackResult.response.text();
       } catch (fallbackError: any) {
@@ -54,8 +54,15 @@ export async function POST(request: Request) {
     
     console.log("Raw AI Response:", responseText);
 
-    // Clean potential markdown blocks if the model still returns them
-    const cleanJson = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
+    // Extract just the JSON object ignoring preambles/reasoning
+    let cleanJson = responseText;
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      cleanJson = jsonMatch[0];
+    }
+    
+    // Clean potential markdown blocks inside the match just in case
+    cleanJson = cleanJson.replace(/```json/g, "").replace(/```/g, "").trim();
     
     try {
       const decision = JSON.parse(cleanJson);
