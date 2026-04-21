@@ -334,7 +334,7 @@ export default function Dashboard() {
                 Tu asistente IA está listo para analizar imágenes y generar descripciones optimizadas para SEO y redes sociales.
               </p>
               <div className="text-xs bg-black/40 text-slate-300 px-3 py-1.5 rounded-md inline-block border border-white/5">
-                Modelo: gemini-1.5-flash
+                Modelo: gemma4
               </div>
             </div>
           </div>

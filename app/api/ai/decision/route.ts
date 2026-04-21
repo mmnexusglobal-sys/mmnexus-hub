@@ -41,8 +41,15 @@ export async function POST(request: Request) {
       const result = await model.generateContent(prompt);
       responseText = result.response.text();
     } catch (apiError: any) {
-      console.error("Error from Google Generative AI API:", apiError);
-      return NextResponse.json({ error: "API Error: " + apiError.message }, { status: 500 });
+      console.warn("Error with default model. Trying fallback model (gemini-pro)...");
+      try {
+        const fallbackModel = getGemmaModel("gemini-pro");
+        const fallbackResult = await fallbackModel.generateContent(prompt);
+        responseText = fallbackResult.response.text();
+      } catch (fallbackError: any) {
+        console.error("Error from Google Generative AI API (Both models failed):", fallbackError);
+        return NextResponse.json({ error: "API Error: " + fallbackError.message }, { status: 500 });
+      }
     }
     
     console.log("Raw AI Response:", responseText);

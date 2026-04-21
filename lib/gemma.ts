@@ -6,7 +6,7 @@ if (!apiKey) {
   console.warn("GOOGLE_AI_API_KEY is not defined in the environment variables.");
 }
 const genAI = new GoogleGenerativeAI(apiKey || '');
-export const getGemmaModel = (modelName: string = 'gemini-1.5-flash') => {
+export const getGemmaModel = (modelName: string = 'gemma4') => {
   return genAI.getGenerativeModel({ model: modelName });
 };
 
