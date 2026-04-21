@@ -8,7 +8,8 @@ import {
 
 export default function Dashboard() {
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedText, setGeneratedText] = useState("");
+  const [concept, setConcept] = useState("");
+  const [decision, setDecision] = useState<any>(null);
   const [printifyStatus, setPrintifyStatus] = useState<{ connected: boolean; shopName?: string; loading: boolean }>({ connected: false, loading: true });
 
   useEffect(() => {
@@ -24,24 +25,35 @@ export default function Dashboard() {
       .catch(() => setPrintifyStatus({ connected: false, loading: false }));
   }, []);
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
+    if (!concept) return;
     setIsGenerating(true);
-    setTimeout(() => {
-      setGeneratedText("🔥 ¡Lleva tu estilo al siguiente nivel con nuestro nuevo diseño exclusivo! ✨\n\nPerfecto para cualquier ocasión. Disponible ahora en nuestra tienda oficial.\n\n#Moda #Estilo #Exclusivo #Diseño #Tendencia");
+    setDecision(null);
+    try {
+      const res = await fetch("/api/ai/decision", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ concept }),
+      });
+      const data = await res.json();
+      setDecision(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
       setIsGenerating(false);
-    }, 2000);
+    }
   };
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-50 flex font-sans selection:bg-indigo-500/30">
       
       {/* Sidebar */}
-      <aside className="w-64 border-r border-white/10 bg-slate-950 flex flex-col p-6 hidden md:flex">
+      <aside className="w-64 border-r border-white/10 bg-slate-950 flex-col p-6 hidden md:flex">
         <div className="flex items-center gap-3 mb-12">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+          <div className="w-10 h-10 rounded-xl bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
             <Wand2 className="w-5 h-5 text-white" />
           </div>
-          <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">MMNexus</h1>
+          <h1 className="text-xl font-bold bg-clip-text text-transparent bg-linear-to-r from-white to-slate-400">MMNexus</h1>
         </div>
         
         <nav className="flex-1 space-y-2">
@@ -86,43 +98,66 @@ export default function Dashboard() {
           
           {/* Left Column - AI Generator */}
           <div className="xl:col-span-2 space-y-8">
-            <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-8 backdrop-blur-sm relative overflow-hidden">
+            <div className="bg-white/[0.02] border border-white/10 rounded-xl p-8 backdrop-blur-sm relative overflow-hidden">
               <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
               
               <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
                 <Wand2 className="w-5 h-5 text-indigo-400" />
-                Generador de Producto y Copy
+                Agente Decisor: Producto y Copy
               </h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Upload Area */}
-                <div className="border-2 border-dashed border-white/10 rounded-xl p-8 flex flex-col items-center justify-center text-center hover:bg-white/5 hover:border-indigo-500/50 transition-all cursor-pointer group">
-                  <div className="w-16 h-16 rounded-full bg-slate-900 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <ImageIcon className="w-8 h-8 text-slate-400 group-hover:text-indigo-400 transition-colors" />
-                  </div>
-                  <p className="text-sm font-medium mb-1">Arrastra tu diseño aquí</p>
-                  <p className="text-xs text-slate-500">PNG o JPG de alta calidad (Max. 50MB)</p>
+                {/* Input Area */}
+                <div className="flex flex-col">
+                  <label className="text-sm font-medium text-slate-300 mb-2">Concepto o Nicho de Diseño</label>
+                  <textarea 
+                    value={concept}
+                    onChange={(e) => setConcept(e.target.value)}
+                    placeholder="Ej. Gatos samurai cyberpunk en Tokyo..."
+                    className="flex-1 w-full bg-slate-900/50 border border-white/10 rounded-xl p-4 text-sm text-slate-200 focus:outline-none focus:border-indigo-500/50 resize-none transition-colors mb-4"
+                  />
+                  <button 
+                    onClick={handleGenerate}
+                    disabled={isGenerating || !concept}
+                    className="w-full bg-linear-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-medium py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-500/25 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {isGenerating ? <RefreshCw className="w-5 h-5 animate-spin" /> : <Wand2 className="w-5 h-5" />}
+                    {isGenerating ? "Procesando Nicho..." : "Analizar con IA"}
+                  </button>
                 </div>
 
                 {/* AI Output Area */}
                 <div className="flex flex-col">
-                  <div className="flex-1 bg-slate-900/50 border border-white/5 rounded-xl p-4 mb-4 font-mono text-sm text-slate-300 relative">
-                    {generatedText ? (
-                      <p className="whitespace-pre-wrap">{generatedText}</p>
+                  <div className="flex-1 bg-slate-900/50 border border-indigo-500/20 rounded-xl p-4 text-sm text-slate-300 relative overflow-y-auto max-h-[300px]">
+                    {decision ? (
+                      <div className="space-y-4">
+                        <div className="bg-indigo-500/10 border border-indigo-500/20 rounded-lg p-3">
+                          <span className="text-xs text-indigo-400 uppercase font-bold tracking-wider mb-1 block">Producto Sugerido</span>
+                          <span className="font-medium text-white">{decision.productType} (Blueprint: {decision.blueprintId})</span>
+                          <p className="text-xs text-slate-400 mt-1">{decision.reason}</p>
+                        </div>
+                        <div>
+                          <span className="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1 block">Título Shopify</span>
+                          <span className="font-medium">{decision.shopifyTitle}</span>
+                        </div>
+                        <div>
+                          <span className="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1 block">Copy Redes Sociales</span>
+                          <p className="text-slate-300 whitespace-pre-wrap">{decision.socialCopy}</p>
+                        </div>
+                        <div className="flex flex-wrap gap-2 pt-2">
+                          {decision.seoTags?.map((tag: string, i: number) => (
+                            <span key={i} className="text-[10px] px-2 py-1 bg-white/5 rounded-full border border-white/10 text-slate-400">#{tag}</span>
+                          ))}
+                        </div>
+                      </div>
                     ) : (
-                      <p className="text-slate-600">Sube un diseño y presiona generar para que Gemma IA cree el copy, descripción y tags automáticamente.</p>
+                      <div className="h-full flex flex-col items-center justify-center text-center opacity-50">
+                        <Wand2 className="w-8 h-8 mb-2" />
+                        <p>Esperando análisis de Gemma AI...</p>
+                      </div>
                     )}
                   </div>
-                  
-                  <button 
-                    onClick={handleGenerate}
-                    disabled={isGenerating}
-                    className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-medium py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-500/25 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
-                  >
-                    {isGenerating ? <RefreshCw className="w-5 h-5 animate-spin" /> : <Wand2 className="w-5 h-5" />}
-                    {isGenerating ? "Generando con IA..." : "Generar Copy & Metadatos"}
-                  </button>
-                </div>
+                </div>            </div>
               </div>
             </div>
 
@@ -277,7 +312,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="mt-8 bg-gradient-to-b from-indigo-500/10 to-transparent border border-indigo-500/20 rounded-xl p-6 relative overflow-hidden">
+            <div className="mt-8 bg-linear-to-b from-indigo-500/10 to-transparent border border-indigo-500/20 rounded-xl p-6 relative overflow-hidden">
               <div className="absolute top-0 right-0 p-4 opacity-10">
                 <Wand2 className="w-24 h-24" />
               </div>
