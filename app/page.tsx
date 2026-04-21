@@ -11,6 +11,8 @@ export default function Dashboard() {
   const [concept, setConcept] = useState("");
   const [decision, setDecision] = useState<any>(null);
   const [printifyStatus, setPrintifyStatus] = useState<{ connected: boolean; shopName?: string; loading: boolean }>({ connected: false, loading: true });
+  const [pipelineExecuting, setPipelineExecuting] = useState(false);
+  const [pipelineResult, setPipelineResult] = useState<any>(null);
 
   useEffect(() => {
     fetch("/api/printify/shops")
@@ -24,6 +26,31 @@ export default function Dashboard() {
       })
       .catch(() => setPrintifyStatus({ connected: false, loading: false }));
   }, []);
+
+  const handleExecutePipeline = async () => {
+    if (!decision) return;
+    setPipelineExecuting(true);
+    setPipelineResult(null);
+    try {
+      const res = await fetch("/api/printify/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(decision),
+      });
+      const data = await res.json();
+      setPipelineResult(data);
+      if (data.success) {
+        alert("¡Pipeline Ejecutado! Producto creado en Printify.");
+      } else {
+        alert("Error: " + data.error);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error al ejecutar el pipeline");
+    } finally {
+      setPipelineExecuting(false);
+    }
+  };
 
   const handleGenerate = async () => {
     if (!concept) return;
@@ -190,9 +217,17 @@ export default function Dashboard() {
             </div>
             
             <div className="flex justify-end">
-              <button className="bg-white text-slate-950 font-bold py-3 px-8 rounded-xl flex items-center gap-2 hover:bg-slate-200 transition-colors">
-                <Send className="w-4 h-4" />
-                Ejecutar Pipeline
+              <button 
+                onClick={handleExecutePipeline}
+                disabled={!decision || pipelineExecuting}
+                className={`font-bold py-3 px-8 rounded-xl flex items-center gap-2 transition-colors ${
+                  !decision || pipelineExecuting 
+                    ? "bg-slate-800 text-slate-500 cursor-not-allowed" 
+                    : "bg-white text-slate-950 hover:bg-slate-200 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+                }`}
+              >
+                {pipelineExecuting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                {pipelineExecuting ? "Ejecutando..." : "Ejecutar Pipeline"}
               </button>
             </div>
           </div>
