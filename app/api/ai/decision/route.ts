@@ -36,16 +36,30 @@ export async function POST(request: Request) {
     const model = getGemmaModel(); // defaults to gemini-1.5-flash
     const prompt = `${SYSTEM_PROMPT}\n\nConcepto de diseño: "${concept}"`;
     
-    const result = await model.generateContent(prompt);
-    const responseText = result.response.text();
+    let responseText = "";
+    try {
+      const result = await model.generateContent(prompt);
+      responseText = result.response.text();
+    } catch (apiError: any) {
+      console.error("Error from Google Generative AI API:", apiError);
+      return NextResponse.json({ error: "API Error: " + apiError.message }, { status: 500 });
+    }
     
+    console.log("Raw AI Response:", responseText);
+
     // Clean potential markdown blocks if the model still returns them
     const cleanJson = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
-    const decision = JSON.parse(cleanJson);
+    
+    try {
+      const decision = JSON.parse(cleanJson);
+      return NextResponse.json(decision);
+    } catch (parseError: any) {
+      console.error("JSON Parse Error. Cleaned text was:", cleanJson);
+      return NextResponse.json({ error: "JSON Parse Error: " + parseError.message, rawOutput: responseText }, { status: 500 });
+    }
 
-    return NextResponse.json(decision);
-  } catch (error) {
-    console.error("AI Decision Error:", error);
-    return NextResponse.json({ error: "Failed to generate AI decision" }, { status: 500 });
+  } catch (error: any) {
+    console.error("AI Decision General Error:", error);
+    return NextResponse.json({ error: "Failed to generate AI decision: " + error.message }, { status: 500 });
   }
 }

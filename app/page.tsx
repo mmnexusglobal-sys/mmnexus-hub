@@ -130,26 +130,39 @@ export default function Dashboard() {
                 <div className="flex flex-col">
                   <div className="flex-1 bg-slate-900/50 border border-indigo-500/20 rounded-xl p-4 text-sm text-slate-300 relative overflow-y-auto max-h-[300px]">
                     {decision ? (
-                      <div className="space-y-4">
-                        <div className="bg-indigo-500/10 border border-indigo-500/20 rounded-lg p-3">
-                          <span className="text-xs text-indigo-400 uppercase font-bold tracking-wider mb-1 block">Producto Sugerido</span>
-                          <span className="font-medium text-white">{decision.productType} (Blueprint: {decision.blueprintId})</span>
-                          <p className="text-xs text-slate-400 mt-1">{decision.reason}</p>
+                      decision.error ? (
+                        <div className="h-full flex flex-col items-center justify-center text-center text-red-400 p-4">
+                          <AlertCircle className="w-8 h-8 mb-2" />
+                          <p className="font-semibold mb-2">Error en la API</p>
+                          <p className="text-xs break-all">{decision.error}</p>
+                          {decision.rawOutput && (
+                            <pre className="mt-4 text-[10px] bg-black/40 p-2 rounded text-left w-full overflow-x-auto text-slate-400">
+                              {decision.rawOutput}
+                            </pre>
+                          )}
                         </div>
-                        <div>
-                          <span className="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1 block">Título Shopify</span>
-                          <span className="font-medium">{decision.shopifyTitle}</span>
+                      ) : (
+                        <div className="space-y-4">
+                          <div className="bg-indigo-500/10 border border-indigo-500/20 rounded-lg p-3">
+                            <span className="text-xs text-indigo-400 uppercase font-bold tracking-wider mb-1 block">Producto Sugerido</span>
+                            <span className="font-medium text-white">{decision.productType} (Blueprint: {decision.blueprintId})</span>
+                            <p className="text-xs text-slate-400 mt-1">{decision.reason}</p>
+                          </div>
+                          <div>
+                            <span className="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1 block">Título Shopify</span>
+                            <span className="font-medium">{decision.shopifyTitle}</span>
+                          </div>
+                          <div>
+                            <span className="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1 block">Copy Redes Sociales</span>
+                            <p className="text-slate-300 whitespace-pre-wrap">{decision.socialCopy}</p>
+                          </div>
+                          <div className="flex flex-wrap gap-2 pt-2">
+                            {decision.seoTags?.map((tag: string, i: number) => (
+                              <span key={i} className="text-[10px] px-2 py-1 bg-white/5 rounded-full border border-white/10 text-slate-400">#{tag}</span>
+                            ))}
+                          </div>
                         </div>
-                        <div>
-                          <span className="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1 block">Copy Redes Sociales</span>
-                          <p className="text-slate-300 whitespace-pre-wrap">{decision.socialCopy}</p>
-                        </div>
-                        <div className="flex flex-wrap gap-2 pt-2">
-                          {decision.seoTags?.map((tag: string, i: number) => (
-                            <span key={i} className="text-[10px] px-2 py-1 bg-white/5 rounded-full border border-white/10 text-slate-400">#{tag}</span>
-                          ))}
-                        </div>
-                      </div>
+                      )
                     ) : (
                       <div className="h-full flex flex-col items-center justify-center text-center opacity-50">
                         <Wand2 className="w-8 h-8 mb-2" />
