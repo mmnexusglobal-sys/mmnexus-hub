@@ -6,11 +6,13 @@ import {
   Settings, LayoutDashboard, Shirt, RefreshCw, CheckCircle2, AlertCircle, Loader2
 } from "lucide-react";
 import GeneradorIA from "@/components/dashboard/GeneradorIA";
+import RedesSociales from "@/components/dashboard/RedesSociales";
 
 export default function Dashboard() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [concept, setConcept] = useState("");
   const [decision, setDecision] = useState<any>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [printifyStatus, setPrintifyStatus] = useState<{ connected: boolean; shopName?: string; loading: boolean }>({ connected: false, loading: true });
   const [activeTab, setActiveTab] = useState("Dashboard");
   const [pipelineExecuting, setPipelineExecuting] = useState(false);
@@ -118,7 +120,9 @@ export default function Dashboard() {
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto p-8 lg:p-12 relative">
         {activeTab === "Generador IA" ? (
-          <GeneradorIA />
+          <GeneradorIA decision={decision} imageUrl={imageUrl} setImageUrl={setImageUrl} />
+        ) : activeTab === "Redes Sociales" ? (
+          <RedesSociales decision={decision} imageUrl={imageUrl} />
         ) : activeTab === "Dashboard" ? (
           <>
             <header className="flex justify-between items-center mb-12">

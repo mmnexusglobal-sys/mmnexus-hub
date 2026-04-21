@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Image as ImageIcon, Sparkles, Loader2, Download, CheckCircle2 } from "lucide-react";
 
-export default function GeneradorIA() {
+export default function GeneradorIA({ decision }: { decision: any }) {
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [isPublishing, setIsPublishing] = useState(false);
 
   const handleGenerate = async () => {
     if (!prompt) return;
@@ -27,6 +28,34 @@ export default function GeneradorIA() {
       alert("Error al generar la imagen");
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  const handlePublishToPrintify = async () => {
+    if (!imageUrl || !decision) {
+      alert("Necesitas generar una imagen y tener una decisión de diseño previa.");
+      return;
+    }
+    
+    setIsPublishing(true);
+    try {
+      const res = await fetch("/api/printify/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...decision, imageUrl }),
+      });
+      
+      const data = await res.json();
+      if (data.success) {
+        alert("¡Éxito! Producto creado en Printify.");
+      } else {
+        alert("Error de Printify: " + data.error);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error crítico al subir a Printify.");
+    } finally {
+      setIsPublishing(false);
     }
   };
 
@@ -98,9 +127,17 @@ export default function GeneradorIA() {
                   </button>
                 </div>
               </div>
-              <button className="w-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-emerald-500/20 transition-colors">
-                <CheckCircle2 className="w-4 h-4" />
-                Aprobar para Printify
+              <button 
+                onClick={handlePublishToPrintify}
+                disabled={isPublishing}
+                className={`w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors ${
+                  isPublishing 
+                    ? "bg-slate-800 text-slate-500 cursor-not-allowed" 
+                    : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20"
+                }`}
+              >
+                {isPublishing ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                {isPublishing ? "Publicando en Printify..." : "Aprobar para Printify"}
               </button>
             </div>
           ) : (

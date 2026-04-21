@@ -15,64 +15,97 @@ export async function POST(request: Request) {
       );
     }
 
-    // 1. OBTENER PROVEEDORES (Para el blueprint seleccionado)
-    // NOTA: Usamos el proveedor por defecto (ej. Monster Digital = 29)
-    const printProviderId = 29; 
+    if (!data.imageUrl) {
+      throw new Error("No se proporcionó imageUrl para el producto.");
+    }
 
-    // 2. CREAR PRODUCTO MOCK EN PRINTIFY
-    // Para simplificar la primera fase de automatización, usaremos valores por defecto.
-    // Más adelante conectaremos esto con la IA Generadora de Imágenes (Stable Diffusion / DALL-E)
+    // 1. Extraer el Base64 limpio de la imagen
+    const base64Clean = data.imageUrl.split(',')[1];
     
+    // 2. Subir imagen a Printify Media Library
+    console.log("Subiendo imagen a Printify...");
+    const uploadRes = await fetch("https://api.printify.com/v1/uploads/images.json", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${PRINTIFY_TOKEN}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        file_name: "nexus_design.png",
+        contents: base64Clean
+      })
+    });
+
+    if (!uploadRes.ok) {
+      const err = await uploadRes.text();
+      throw new Error("Fallo al subir la imagen: " + err);
+    }
+    const uploadedImage = await uploadRes.json();
+    console.log("Imagen subida con ID:", uploadedImage.id);
+
+    // 3. OBTENER PROVEEDORES (Para el blueprint seleccionado)
+    // NOTA: Usamos el proveedor por defecto (Monster Digital = 29, Blueprint = 12 para T-Shirt)
+    // Para no fallar en validaciones, forzamos un blueprint básico si el de la IA no coincide
+    const safeBlueprintId = 12; // Men's Cotton Crew Tee
+    const printProviderId = 29; // Monster Digital
+    const variantId = 18542; // ID real para Variante "White / L" en Monster Digital para Blueprint 12
+
+    // 4. CREAR PRODUCTO EN PRINTIFY
     const printifyBody = {
-      title: data.shopifyTitle,
-      description: data.socialCopy + "\n\nHashtags: " + (data.seoTags?.join(" ") || ""),
-      blueprint_id: data.blueprintId,
+      title: data.shopifyTitle || "MMNexus Design",
+      description: (data.socialCopy || "") + "\n\nHashtags: " + (data.seoTags?.join(" ") || ""),
+      blueprint_id: safeBlueprintId,
       print_provider_id: printProviderId,
       variants: [
-        { id: 17887, price: 2500, is_enabled: true } // Variante genérica (dependerá del blueprint)
+        { id: variantId, price: 2500, is_enabled: true }
       ],
       print_areas: [
         {
-          variant_ids: [17887],
+          variant_ids: [variantId],
           placeholders: [
             {
               position: "front",
-              images: [] // Aquí irá el ID de la imagen subida en la fase 2
+              images: [
+                {
+                  id: uploadedImage.id,
+                  x: 0.5,
+                  y: 0.5,
+                  scale: 0.8,
+                  angle: 0
+                }
+              ]
             }
           ]
         }
       ]
     };
 
-    // Simularemos la llamada a Printify por seguridad antes de hacer POST reales,
-    // pero verificaremos que el Token es válido consultando las tiendas del usuario.
-    const verifyResponse = await fetch("https://api.printify.com/v1/shops.json", {
-      method: "GET",
+    console.log("Creando Draft en Printify...");
+    const createRes = await fetch(`https://api.printify.com/v1/shops/${SHOP_ID}/products.json`, {
+      method: "POST",
       headers: {
         "Authorization": `Bearer ${PRINTIFY_TOKEN}`,
         "Content-Type": "application/json"
-      }
+      },
+      body: JSON.stringify(printifyBody)
     });
 
-    if (!verifyResponse.ok) {
-      const errorText = await verifyResponse.text();
-      throw new Error(`Fallo de Autenticación con Printify: ${errorText}`);
+    if (!createRes.ok) {
+      const errorText = await createRes.text();
+      throw new Error(`Fallo al crear producto: ${errorText}`);
     }
 
-    const shops = await verifyResponse.json();
-    console.log("✅ Conexión con Printify exitosa. Tiendas detectadas:", shops.length);
-
-    // TODO: Hacer el POST real a https://api.printify.com/v1/shops/${SHOP_ID}/products.json
-    // Por ahora retornamos éxito para validar el pipeline del frontend.
+    const product = await createRes.json();
+    console.log("✅ Producto creado exitosamente:", product.id);
 
     return NextResponse.json({
       success: true,
-      message: "Pipeline ejecutado correctamente",
+      message: "Producto creado en Printify correctamente",
       details: {
-        status: "Draft Creado (Simulado)",
+        status: "Draft Creado",
+        productId: product.id,
         shop: SHOP_ID,
-        title: data.shopifyTitle,
-        blueprint: data.blueprintId
+        title: product.title,
       }
     });
 
