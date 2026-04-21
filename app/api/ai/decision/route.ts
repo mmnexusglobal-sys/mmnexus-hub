@@ -20,9 +20,8 @@ Responde ÚNICAMENTE en formato JSON válido con esta estructura exacta:
   "reason": "Explicación breve de por qué este producto encaja con el nicho.",
   "shopifyTitle": "Título SEO optimizado para tienda (máx 60 chars)",
   "socialCopy": "Copy persuasivo para Instagram/TikTok incluyendo hashtags relevantes.",
-  "seoTags": ["tag1", "tag2", "tag3"]
 }
-REGLA CRÍTICA: NO incluyas markdown, saludos, explicaciones previas ni razonamientos en texto. Tu respuesta debe empezar directamente con '{' y terminar con '}'.
+REGLA CRÍTICA: Tu única salida debe ser un objeto JSON válido. NO incluyas markdown, NO incluyas saludos, NO incluyas explicaciones previas ni razonamientos. Solo el JSON.
 `;
 
 export async function POST(request: Request) {
@@ -54,15 +53,23 @@ export async function POST(request: Request) {
     
     console.log("Raw AI Response:", responseText);
 
-    // Extract just the JSON object ignoring preambles/reasoning
     let cleanJson = responseText;
-    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      cleanJson = jsonMatch[0];
-    }
     
-    // Clean potential markdown blocks inside the match just in case
-    cleanJson = cleanJson.replace(/```json/g, "").replace(/```/g, "").trim();
+    // Si la IA envolvió toda su respuesta en llaves por error (ej. { Role: ... "blueprintId": 12 }), 
+    // fallará el JSON.parse. Vamos a intentar extraer la parte que parece JSON real.
+    const blueprintMatch = responseText.match(/\{[\s\S]*"blueprintId"[\s\S]*\}/);
+    if (blueprintMatch) {
+      cleanJson = blueprintMatch[0];
+    }
+
+    // Limpiar markdown residual
+    cleanJson = cleanJson.replace(/```json/gi, "").replace(/```/gi, "").trim();
+
+    // Fix común: Si el texto empieza con { pero tiene texto plano antes del "blueprintId", 
+    // intentamos buscar el primer "{" justo antes de "blueprintId"
+    if (cleanJson.startsWith('{') && !cleanJson.includes('"blueprintId":')) {
+         // Fallback
+    }
     
     try {
       const decision = JSON.parse(cleanJson);

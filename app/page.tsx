@@ -5,12 +5,14 @@ import {
   Wand2, Image as ImageIcon, Send, Share2, ShoppingBag, 
   Settings, LayoutDashboard, Shirt, RefreshCw, CheckCircle2, AlertCircle, Loader2
 } from "lucide-react";
+import GeneradorIA from "@/components/dashboard/GeneradorIA";
 
 export default function Dashboard() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [concept, setConcept] = useState("");
   const [decision, setDecision] = useState<any>(null);
   const [printifyStatus, setPrintifyStatus] = useState<{ connected: boolean; shopName?: string; loading: boolean }>({ connected: false, loading: true });
+  const [activeTab, setActiveTab] = useState("Dashboard");
   const [pipelineExecuting, setPipelineExecuting] = useState(false);
   const [pipelineResult, setPipelineResult] = useState<any>(null);
 
@@ -85,17 +87,24 @@ export default function Dashboard() {
         
         <nav className="flex-1 space-y-2">
           {[
-            { icon: LayoutDashboard, label: "Dashboard", active: true },
-            { icon: ImageIcon, label: "Generador IA", active: false },
-            { icon: Shirt, label: "Printify Products", active: false },
-            { icon: ShoppingBag, label: "E-Commerce", active: false },
-            { icon: Share2, label: "Redes Sociales", active: false },
-          ].map((item, i) => (
-            <button key={i} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${item.active ? "bg-indigo-500/10 text-indigo-400 border border-indigo-500/20" : "text-slate-400 hover:bg-white/5 hover:text-slate-200"}`}>
-              <item.icon className="w-5 h-5" />
-              <span className="font-medium">{item.label}</span>
-            </button>
-          ))}
+            { icon: LayoutDashboard, label: "Dashboard" },
+            { icon: ImageIcon, label: "Generador IA" },
+            { icon: Shirt, label: "Printify Products" },
+            { icon: ShoppingBag, label: "E-Commerce" },
+            { icon: Share2, label: "Redes Sociales" },
+          ].map((item, i) => {
+            const isActive = activeTab === item.label;
+            return (
+              <button 
+                key={i} 
+                onClick={() => setActiveTab(item.label)}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive ? "bg-indigo-500/10 text-indigo-400 border border-indigo-500/20" : "text-slate-400 hover:bg-white/5 hover:text-slate-200"}`}
+              >
+                <item.icon className="w-5 h-5" />
+                <span className="font-medium">{item.label}</span>
+              </button>
+            );
+          })}
         </nav>
         
         <div className="pt-6 border-t border-white/10">
@@ -107,12 +116,16 @@ export default function Dashboard() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto p-8 lg:p-12">
-        <header className="flex justify-between items-center mb-12">
-          <div>
-            <h2 className="text-3xl font-bold mb-2">Workspace Central</h2>
-            <p className="text-slate-400">Automatiza la creación y distribución de tus productos.</p>
-          </div>
+      <main className="flex-1 overflow-y-auto p-8 lg:p-12 relative">
+        {activeTab === "Generador IA" ? (
+          <GeneradorIA />
+        ) : activeTab === "Dashboard" ? (
+          <>
+            <header className="flex justify-between items-center mb-12">
+              <div>
+                <h2 className="text-3xl font-bold mb-2">Workspace Central</h2>
+                <p className="text-slate-400">Automatiza la creación y distribución de tus productos.</p>
+              </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-2 rounded-full text-sm font-medium">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -373,8 +386,13 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-
-        </div>
+          </div>
+          </>
+        ) : (
+          <div className="flex h-full items-center justify-center text-slate-500">
+            En construcción...
+          </div>
+        )}
       </main>
     </div>
   );
