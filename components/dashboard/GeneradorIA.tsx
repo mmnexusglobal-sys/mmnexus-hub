@@ -1,10 +1,17 @@
 import { useState } from "react";
 import { Image as ImageIcon, Sparkles, Loader2, Download, CheckCircle2 } from "lucide-react";
 
-export default function GeneradorIA({ decision }: { decision: any }) {
+export default function GeneradorIA({ 
+  decision, 
+  imageUrl, 
+  setImageUrl 
+}: { 
+  decision: any; 
+  imageUrl: string | null; 
+  setImageUrl: (url: string | null) => void;
+}) {
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isPublishing, setIsPublishing] = useState(false);
 
   const handleGenerate = async () => {
