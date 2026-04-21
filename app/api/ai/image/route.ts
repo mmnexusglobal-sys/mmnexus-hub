@@ -42,13 +42,30 @@ export async function POST(request: Request) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("Error API Imagen:", errorText);
-      throw new Error("Fallo en la generación de Google Imagen API");
+      console.warn("Google Imagen API retornó error, activando modelo de respaldo...", errorText);
+      
+      // Fallback a un generador gratuito (Pollinations AI)
+      // Traducir o limpiar el prompt para mejor resultado (acortarlo si es muy largo)
+      const cleanPrompt = prompt.substring(0, 500) + " isolated on white background high quality digital art";
+      const fallbackPrompt = encodeURIComponent(cleanPrompt);
+      const fallbackUrl = `https://image.pollinations.ai/prompt/${fallbackPrompt}?width=1024&height=1024&nologo=true`;
+      
+      // Hacemos el fetch en el servidor para que el frontend espere (isGenerating = true)
+      const pollResponse = await fetch(fallbackUrl);
+      if (!pollResponse.ok) throw new Error("Error en el generador de respaldo");
+      
+      const arrayBuffer = await pollResponse.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const base64Image = buffer.toString('base64');
+      
+      return NextResponse.json({ 
+        imageUrl: `data:image/jpeg;base64,${base64Image}`,
+        warning: "Se usó modelo de respaldo porque Imagen 4 requiere plan de pago."
+      });
     }
 
     const data = await response.json();
     
-    // Google Imagen API retorna un arreglo de predicciones (predictions) con bytes codificados en base64
     if (data.predictions && data.predictions.length > 0) {
       const base64Image = data.predictions[0].bytesBase64Encoded;
       return NextResponse.json({ 
