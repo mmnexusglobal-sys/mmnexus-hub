@@ -1,14 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Wand2, Image as ImageIcon, Send, Share2, ShoppingBag, 
-  Settings, LayoutDashboard, Shirt, RefreshCw, CheckCircle2, AlertCircle
+  Settings, LayoutDashboard, Shirt, RefreshCw, CheckCircle2, AlertCircle, Loader2
 } from "lucide-react";
 
 export default function Dashboard() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedText, setGeneratedText] = useState("");
+  const [printifyStatus, setPrintifyStatus] = useState<{ connected: boolean; shopName?: string; loading: boolean }>({ connected: false, loading: true });
+
+  useEffect(() => {
+    fetch("/api/printify/shops")
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          setPrintifyStatus({ connected: true, shopName: data[0].title, loading: false });
+        } else {
+          setPrintifyStatus({ connected: false, loading: false });
+        }
+      })
+      .catch(() => setPrintifyStatus({ connected: false, loading: false }));
+  }, []);
 
   const handleGenerate = () => {
     setIsGenerating(true);
@@ -148,9 +162,19 @@ export default function Dashboard() {
                   </div>
                   <div>
                     <h4 className="font-medium text-sm">Printify</h4>
-                    <p className="text-xs text-emerald-400 flex items-center gap-1 mt-0.5">
-                      <CheckCircle2 className="w-3 h-3" /> Conectado
-                    </p>
+                    {printifyStatus.loading ? (
+                      <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
+                        <Loader2 className="w-3 h-3 animate-spin" /> Verificando...
+                      </p>
+                    ) : printifyStatus.connected ? (
+                      <p className="text-xs text-emerald-400 flex items-center gap-1 mt-0.5">
+                        <CheckCircle2 className="w-3 h-3" /> {printifyStatus.shopName}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-amber-400 flex items-center gap-1 mt-0.5">
+                        <AlertCircle className="w-3 h-3" /> Error de conexión
+                      </p>
+                    )}
                   </div>
                 </div>
                 <button className="text-xs font-medium text-slate-400 hover:text-white transition-colors">Configurar</button>
@@ -172,20 +196,84 @@ export default function Dashboard() {
                 <button className="text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors">Conectar</button>
               </div>
 
-              {/* Integration Card */}
+              {/* Instagram Card */}
               <div className="bg-white/5 border border-white/10 rounded-xl p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                    <Share2 className="w-5 h-5 text-blue-500" />
+                  <div className="w-10 h-10 rounded-lg bg-pink-500/10 flex items-center justify-center">
+                    <Share2 className="w-5 h-5 text-pink-500" />
                   </div>
                   <div>
-                    <h4 className="font-medium text-sm">Meta (FB/IG)</h4>
+                    <h4 className="font-medium text-sm">Instagram & FB</h4>
                     <p className="text-xs text-amber-400 flex items-center gap-1 mt-0.5">
-                      <AlertCircle className="w-3 h-3" /> Pendiente
+                      <AlertCircle className="w-3 h-3" /> Pendiente OAuth
                     </p>
                   </div>
                 </div>
                 <button className="text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors">Conectar</button>
+              </div>
+
+              {/* TikTok Card */}
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                    <Share2 className="w-5 h-5 text-cyan-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-sm">TikTok</h4>
+                    <p className="text-xs text-amber-400 flex items-center gap-1 mt-0.5">
+                      <AlertCircle className="w-3 h-3" /> Pendiente API
+                    </p>
+                  </div>
+                </div>
+                <button className="text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors">Conectar</button>
+              </div>
+
+              {/* Pinterest Card */}
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center">
+                    <Share2 className="w-5 h-5 text-red-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-sm">Pinterest</h4>
+                    <p className="text-xs text-amber-400 flex items-center gap-1 mt-0.5">
+                      <AlertCircle className="w-3 h-3" /> Pendiente API
+                    </p>
+                  </div>
+                </div>
+                <button className="text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors">Conectar</button>
+              </div>
+              
+              {/* Google Drive Card */}
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                    <ImageIcon className="w-5 h-5 text-blue-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-sm">Google Drive</h4>
+                    <p className="text-xs text-amber-400 flex items-center gap-1 mt-0.5">
+                      <AlertCircle className="w-3 h-3" /> Pendiente API
+                    </p>
+                  </div>
+                </div>
+                <button className="text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors">Conectar</button>
+              </div>
+
+              {/* Email Reports Card */}
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-yellow-500/10 flex items-center justify-center">
+                    <Send className="w-5 h-5 text-yellow-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-sm">Reporte Semanal</h4>
+                    <p className="text-xs text-emerald-400 flex items-center gap-1 mt-0.5">
+                      <CheckCircle2 className="w-3 h-3" /> mmnexusglobal@gmail.com
+                    </p>
+                  </div>
+                </div>
+                <button className="text-xs font-medium text-slate-400 hover:text-white transition-colors">Editar</button>
               </div>
             </div>
 
