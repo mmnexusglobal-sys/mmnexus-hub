@@ -11,6 +11,7 @@ import RedesSociales from "@/components/dashboard/RedesSociales";
 export default function Dashboard() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [concept, setConcept] = useState("");
+  const [trendsInput, setTrendsInput] = useState("");
   const [decision, setDecision] = useState<any>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [printifyStatus, setPrintifyStatus] = useState<{ connected: boolean; shopName?: string; loading: boolean }>({ connected: false, loading: true });
@@ -409,7 +410,7 @@ export default function Dashboard() {
                 Modelo: gemma4
               </div>
             </div>
-          </div>
+            </div>
           </div>
           </>
         ) : (
@@ -419,5 +420,23 @@ export default function Dashboard() {
         )}
       </main>
     </div>
+  );
+}
+
+function SidebarItem({ icon, label, active, onClick }: { icon: React.ReactNode; label: string; active?: boolean; onClick?: () => void }) {
+  return (
+    <button 
+      onClick={onClick}
+      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
+        active 
+          ? "bg-indigo-500/10 text-indigo-400 font-medium" 
+          : "text-slate-400 hover:bg-white/5 hover:text-slate-200"
+      }`}
+    >
+      <div className={`${active ? "text-indigo-400" : "text-slate-500 group-hover:text-slate-300"} transition-colors`}>
+        {icon}
+      </div>
+      <span>{label}</span>
+    </button>
   );
 }
