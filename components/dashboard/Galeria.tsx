@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { getSavedDesigns, SavedDesign } from "@/lib/db";
-import { Loader2, Image as ImageIcon, Search, Tag, Calendar, Database } from "lucide-react";
+import { getSavedDesigns, deleteDesign, SavedDesign } from "@/lib/db";
+import { Loader2, Image as ImageIcon, Search, Tag, Calendar, Database, Trash2 } from "lucide-react";
 
 export default function Galeria() {
   const [designs, setDesigns] = useState<SavedDesign[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
   useEffect(() => {
     loadDesigns();
@@ -16,6 +17,20 @@ export default function Galeria() {
     const data = await getSavedDesigns();
     setDesigns(data);
     setLoading(false);
+  };
+
+  const handleDelete = async (id: string | undefined) => {
+    if (!id) return;
+    if (!confirm("¿Estás seguro de que deseas eliminar este diseño de tu galería?")) return;
+    
+    setIsDeleting(id);
+    const success = await deleteDesign(id);
+    if (success) {
+      setDesigns(prev => prev.filter(d => d.id !== id));
+    } else {
+      alert("Error al intentar eliminar el diseño.");
+    }
+    setIsDeleting(null);
   };
 
   const filteredDesigns = designs.filter(d => 
@@ -68,8 +83,18 @@ export default function Galeria() {
                     alt={design.shopifyTitle} 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
                   />
-                  <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded text-[10px] font-bold text-emerald-400 border border-emerald-500/20">
-                    {design.productType}
+                  <div className="absolute top-2 right-2 flex flex-col gap-2">
+                    <button 
+                      onClick={() => handleDelete(design.id)}
+                      disabled={isDeleting === design.id}
+                      className="bg-black/60 hover:bg-rose-500/80 backdrop-blur-md p-1.5 rounded text-white border border-white/10 hover:border-rose-500/50 transition-colors opacity-0 group-hover:opacity-100 disabled:opacity-50"
+                      title="Eliminar diseño"
+                    >
+                      {isDeleting === design.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                    </button>
+                    <div className="bg-black/60 backdrop-blur-md px-2 py-1 rounded text-[10px] font-bold text-emerald-400 border border-emerald-500/20">
+                      {design.productType}
+                    </div>
                   </div>
                 </div>
                 

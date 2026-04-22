@@ -70,3 +70,26 @@ export const getSavedDesigns = async (): Promise<SavedDesign[]> => {
     return designs.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }
 };
+
+// Función para eliminar un diseño
+export const deleteDesign = async (id: string): Promise<boolean> => {
+  if (isFirebaseConfigured()) {
+    try {
+      const { doc, deleteDoc } = await import("firebase/firestore");
+      await deleteDoc(doc(db, "designs", id));
+      return true;
+    } catch (e) {
+      console.error("Error eliminando diseño de Firebase:", e);
+      return false;
+    }
+  } else {
+    // Fallback a LocalStorage
+    const existing = localStorage.getItem("mmnexus_designs");
+    if (!existing) return false;
+    
+    let designs = JSON.parse(existing);
+    designs = designs.filter((d: any) => d.id !== id);
+    localStorage.setItem("mmnexus_designs", JSON.stringify(designs));
+    return true;
+  }
+};

@@ -45,14 +45,23 @@ export async function POST(request: Request) {
       console.warn("Google Imagen API retornó error, activando modelo de respaldo...", errorText);
       
       // Fallback a un generador gratuito (Pollinations AI)
-      // Traducir o limpiar el prompt para mejor resultado (acortarlo si es muy largo)
-      const cleanPrompt = prompt.substring(0, 500) + " isolated on white background high quality digital art";
+      const cleanPrompt = prompt.substring(0, 500) + " isolated on white background high quality digital art vector style";
       const fallbackPrompt = encodeURIComponent(cleanPrompt);
       const fallbackUrl = `https://image.pollinations.ai/prompt/${fallbackPrompt}?width=1024&height=1024&nologo=true`;
       
-      // Hacemos el fetch en el servidor para que el frontend espere (isGenerating = true)
-      const pollResponse = await fetch(fallbackUrl);
-      if (!pollResponse.ok) throw new Error("Error en el generador de respaldo");
+      console.log("Intentando fallback URL:", fallbackUrl);
+      const pollResponse = await fetch(fallbackUrl, {
+        headers: {
+          "User-Agent": "MMNexus-Hub-Bot/1.0",
+          "Accept": "image/*"
+        }
+      });
+      
+      if (!pollResponse.ok) {
+        const errText = await pollResponse.text();
+        console.error("Pollinations falló con status:", pollResponse.status, errText);
+        throw new Error("Error en el generador de respaldo (" + pollResponse.status + ")");
+      }
       
       const arrayBuffer = await pollResponse.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
@@ -60,7 +69,7 @@ export async function POST(request: Request) {
       
       return NextResponse.json({ 
         imageUrl: `data:image/jpeg;base64,${base64Image}`,
-        warning: "Se usó modelo de respaldo porque Imagen 4 requiere plan de pago."
+        warning: "Se usó modelo de respaldo porque Imagen 4 falló."
       });
     }
 

@@ -4,6 +4,16 @@ import { Share2, Camera, Music2, MapPin, Hash, CheckCircle2, Loader2, Video } fr
 export default function RedesSociales({ decision, imageUrl }: { decision: any, imageUrl: string | null }) {
   const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [isPublishingLoading, setIsPublishingLoading] = useState(false);
+  const [isPublishingIg, setIsPublishingIg] = useState(false);
+
+  const handlePublishIG = async () => {
+    setIsPublishingLoading(true);
+    // Simular llamada a la Graph API de Meta
+    await new Promise(resolve => setTimeout(resolve, 2500));
+    setIsPublishingIg(true);
+    setIsPublishingLoading(false);
+  };
 
   if (!decision || !imageUrl) {
     return (
@@ -86,12 +96,25 @@ export default function RedesSociales({ decision, imageUrl }: { decision: any, i
             </div>
 
             <div className="flex gap-4">
-              <button className="flex-1 bg-pink-500 text-white font-bold py-3 rounded-xl hover:bg-pink-600 transition-colors shadow-lg shadow-pink-500/20">
-                Publicar Ahora
-              </button>
-              <button className="flex-1 bg-white/10 text-slate-200 font-medium py-3 rounded-xl hover:bg-white/20 transition-colors">
-                Programar...
-              </button>
+              {isPublishingIg ? (
+                <div className="w-full bg-emerald-500/20 border border-emerald-500/50 text-emerald-400 font-bold py-3 rounded-xl flex justify-center items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5" /> ¡Publicado en Instagram!
+                </div>
+              ) : (
+                <>
+                  <button 
+                    onClick={handlePublishIG}
+                    disabled={isPublishingLoading}
+                    className="flex-1 bg-pink-500 text-white font-bold py-3 rounded-xl hover:bg-pink-600 transition-colors shadow-lg shadow-pink-500/20 flex justify-center items-center gap-2 disabled:opacity-50"
+                  >
+                    {isPublishingLoading && <Loader2 className="w-5 h-5 animate-spin" />}
+                    {isPublishingLoading ? "Enviando a API..." : "Publicar Ahora"}
+                  </button>
+                  <button className="flex-1 bg-white/10 text-slate-200 font-medium py-3 rounded-xl hover:bg-white/20 transition-colors disabled:opacity-50" disabled={isPublishingLoading}>
+                    Programar...
+                  </button>
+                </>
+              )}
             </div>
           </div>
 
