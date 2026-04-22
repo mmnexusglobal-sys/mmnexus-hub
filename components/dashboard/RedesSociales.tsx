@@ -1,6 +1,10 @@
-import { Share2, Camera, Music2, MapPin, Hash, CheckCircle2 } from "lucide-react";
+import { useState } from "react";
+import { Share2, Camera, Music2, MapPin, Hash, CheckCircle2, Loader2, Video } from "lucide-react";
 
 export default function RedesSociales({ decision, imageUrl }: { decision: any, imageUrl: string | null }) {
+  const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+
   if (!decision || !imageUrl) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-slate-500 space-y-4">
@@ -10,6 +14,28 @@ export default function RedesSociales({ decision, imageUrl }: { decision: any, i
       </div>
     );
   }
+
+  const handleGenerateVideo = async () => {
+    setIsGeneratingVideo(true);
+    try {
+      const res = await fetch("/api/ai/video", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageUrl, socialCopy: decision.socialCopy }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setVideoUrl(data.videoUrl);
+      } else {
+        alert("Error generando el video: " + data.error);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Fallo de conexión al generar video.");
+    } finally {
+      setIsGeneratingVideo(false);
+    }
+  };
 
   const socialCopy = decision.socialCopy || "¡Nuevo diseño disponible en MMNexus!";
   const tags = decision.seoTags || ["streetwear", "design", "art"];
@@ -69,18 +95,46 @@ export default function RedesSociales({ decision, imageUrl }: { decision: any, i
             </div>
           </div>
 
-          {/* TikTok Script */}
+          {/* TikTok Script & Video Generator */}
           <div className="bg-linear-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 rounded-2xl p-6 relative overflow-hidden">
             <div className="absolute top-4 right-4 bg-cyan-500 text-white p-2 rounded-full shadow-lg shadow-cyan-500/30">
               <Music2 className="w-5 h-5" />
             </div>
-            <h3 className="font-bold text-lg text-cyan-100 mb-4">Guion para TikTok (Copywriter-Pro)</h3>
+            <h3 className="font-bold text-lg text-cyan-100 mb-4 flex items-center gap-2">
+              <Video className="w-5 h-5 text-cyan-400" />
+              TikTok & Reels (Video Generativo)
+            </h3>
             
-            <div className="bg-black/40 rounded-xl p-4 border border-white/5 space-y-3">
-              <p className="text-sm text-slate-400"><span className="text-cyan-400 font-bold">Hook (0-3s):</span> Muestra la imagen tapada y di "No vas a creer el diseño que acabo de crear con IA para mi tienda..."</p>
-              <p className="text-sm text-slate-400"><span className="text-cyan-400 font-bold">Body (3-10s):</span> Revela el diseño al ritmo del beat. "Literalmente es un perro astronauta. Lo subí a Printify en 10 segundos".</p>
-              <p className="text-sm text-slate-400"><span className="text-cyan-400 font-bold">CTA (10-15s):</span> "Link en la bio si quieres llevártelo antes de que se agote."</p>
-            </div>
+            {!videoUrl ? (
+              <>
+                <div className="bg-black/40 rounded-xl p-4 border border-white/5 space-y-3 mb-4">
+                  <p className="text-sm text-slate-400"><span className="text-cyan-400 font-bold">Hook (0-3s):</span> {decision.socialCopy ? `Muestra la imagen tapada y di "${decision.socialCopy.split('.')[0]}..."` : 'Muestra la imagen tapada y di "No vas a creer el diseño que acabo de crear..."'}</p>
+                  <p className="text-sm text-slate-400"><span className="text-cyan-400 font-bold">Body (3-10s):</span> Revela el diseño al ritmo del beat de tendencia actual.</p>
+                  <p className="text-sm text-slate-400"><span className="text-cyan-400 font-bold">CTA (10-15s):</span> "Link in bio to get yours before it sells out!"</p>
+                </div>
+                
+                <button 
+                  onClick={handleGenerateVideo}
+                  disabled={isGeneratingVideo}
+                  className="w-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/50 font-bold py-3 rounded-xl hover:bg-cyan-500/30 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {isGeneratingVideo ? <Loader2 className="w-5 h-5 animate-spin" /> : <Video className="w-5 h-5" />}
+                  {isGeneratingVideo ? "Renderizando Video (Creatomate)..." : "Auto-Generar Video MP4"}
+                </button>
+              </>
+            ) : (
+              <div className="bg-black/60 rounded-xl border border-emerald-500/30 p-6 flex flex-col items-center justify-center text-center space-y-4">
+                <CheckCircle2 className="w-12 h-12 text-emerald-400" />
+                <div>
+                  <h4 className="text-emerald-300 font-bold">¡Video Renderizado!</h4>
+                  <p className="text-sm text-slate-400">El MP4 está listo para publicarse en TikTok.</p>
+                </div>
+                {/* Mock preview of a video link */}
+                <a href={videoUrl} target="_blank" rel="noreferrer" className="text-sm text-cyan-400 underline mt-2 break-all">
+                  {videoUrl}
+                </a>
+              </div>
+            )}
           </div>
 
         </div>
