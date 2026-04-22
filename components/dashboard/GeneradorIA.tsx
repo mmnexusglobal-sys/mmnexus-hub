@@ -27,6 +27,19 @@ export default function GeneradorIA({
       const data = await res.json();
       if (data.imageUrl) {
         setImageUrl(data.imageUrl);
+        // Autoguardado en DB si tenemos la data
+        if (decision) {
+          import("@/lib/db").then(({ saveDesign }) => {
+            saveDesign({
+              concept: prompt,
+              imageUrl: data.imageUrl,
+              socialCopy: decision.socialCopy || "",
+              shopifyTitle: decision.shopifyTitle || "",
+              seoTags: decision.seoTags || [],
+              productType: decision.productType || "",
+            });
+          });
+        }
       } else {
         alert("Error: " + data.error);
       }

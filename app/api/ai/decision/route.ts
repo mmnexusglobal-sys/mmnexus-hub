@@ -1,5 +1,20 @@
 import { NextResponse } from "next/server";
 import { getGemmaModel } from "@/lib/gemma";
+import fs from "fs";
+import path from "path";
+
+const getDailyTrends = () => {
+  try {
+    const trendsPath = path.join(process.cwd(), "data", "daily_trends.json");
+    if (fs.existsSync(trendsPath)) {
+      const data = fs.readFileSync(trendsPath, "utf8");
+      return JSON.parse(data);
+    }
+  } catch (e) {
+    console.error("Could not load daily trends:", e);
+  }
+  return null;
+};
 
 const SYSTEM_PROMPT = `
 Eres el "Nexus Trend-Finder", un agente experto en ecommerce, print on demand y marketing viral.
@@ -33,8 +48,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No concept provided" }, { status: 400 });
     }
 
+    const trends = getDailyTrends();
+    let trendsContext = "";
+    if (trends) {
+      trendsContext = `\n\n[INSUMO DIARIO DE TENDENCIAS]\nUsa esta información actual del mercado para optimizar el producto elegido, el título, el social copy y los tags:\n${JSON.stringify(trends, null, 2)}\n`;
+    }
+
     const model = getGemmaModel(); // defaults to gemini-1.5-flash
-    const prompt = `${SYSTEM_PROMPT}\n\nConcepto de diseño: "${concept}"`;
+    const prompt = `${SYSTEM_PROMPT}${trendsContext}\n\nConcepto de diseño: "${concept}"`;
     
     let responseText = "";
     try {

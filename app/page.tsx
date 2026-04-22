@@ -3,10 +3,21 @@
 import { useState, useEffect } from "react";
 import { 
   Wand2, Image as ImageIcon, Send, Share2, ShoppingBag, 
-  Settings, LayoutDashboard, Shirt, RefreshCw, CheckCircle2, AlertCircle, Loader2
+  Settings, LayoutDashboard, Shirt, RefreshCw, CheckCircle2, AlertCircle, Loader2, Database
 } from "lucide-react";
 import GeneradorIA from "@/components/dashboard/GeneradorIA";
 import RedesSociales from "@/components/dashboard/RedesSociales";
+import Galeria from "@/components/dashboard/Galeria";
+
+const SidebarItem = ({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active?: boolean, onClick: () => void }) => (
+  <button 
+    onClick={onClick}
+    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${active ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'}`}
+  >
+    {icon}
+    <span className="font-medium text-sm">{label}</span>
+  </button>
+);
 
 export default function Dashboard() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -40,7 +51,7 @@ export default function Dashboard() {
       const res = await fetch("/api/printify/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(decision),
+        body: JSON.stringify({ ...decision, imageUrl }),
       });
       const data = await res.json();
       setPipelineResult(data);
@@ -92,6 +103,7 @@ export default function Dashboard() {
         <nav className="flex flex-col gap-2">
           <SidebarItem icon={<LayoutDashboard />} label="Dashboard" active={activeTab === "Dashboard"} onClick={() => setActiveTab("Dashboard")} />
           <SidebarItem icon={<ImageIcon />} label="Generador IA" active={activeTab === "Generador IA"} onClick={() => setActiveTab("Generador IA")} />
+          <SidebarItem icon={<Database />} label="Galería" active={activeTab === "Galería"} onClick={() => setActiveTab("Galería")} />
           <SidebarItem icon={<Shirt />} label="Printify Products" active={activeTab === "Printify Products"} onClick={() => setActiveTab("Printify Products")} />
           <SidebarItem icon={<ShoppingBag />} label="E-Commerce" active={activeTab === "E-Commerce"} onClick={() => setActiveTab("E-Commerce")} />
           
@@ -99,19 +111,19 @@ export default function Dashboard() {
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Agentes</span>
           </div>
           <SidebarItem icon={<Share2 />} label="Redes Sociales" active={activeTab === "Redes Sociales"} onClick={() => setActiveTab("Redes Sociales")} />
+          <SidebarItem icon={<Settings />} label="Configuración" active={activeTab === "Configuración"} onClick={() => setActiveTab("Configuración")} />
         </nav>
-
-        <div className="mt-auto">
-          <SidebarItem icon={<Settings />} label="Configuración" onClick={() => {}} />
-        </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto p-8 lg:p-12 relative">
+      <main className="flex-1 p-8 md:p-12 overflow-y-auto h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-900/20 via-slate-950 to-slate-950">
+        
         {activeTab === "Generador IA" ? (
           <GeneradorIA decision={decision} imageUrl={imageUrl} setImageUrl={setImageUrl} />
         ) : activeTab === "Redes Sociales" ? (
           <RedesSociales decision={decision} imageUrl={imageUrl} />
+        ) : activeTab === "Galería" ? (
+          <Galeria />
         ) : activeTab === "Dashboard" ? (
           <>
             <header className="flex justify-between items-center mb-12">
@@ -420,23 +432,5 @@ export default function Dashboard() {
         )}
       </main>
     </div>
-  );
-}
-
-function SidebarItem({ icon, label, active, onClick }: { icon: React.ReactNode; label: string; active?: boolean; onClick?: () => void }) {
-  return (
-    <button 
-      onClick={onClick}
-      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
-        active 
-          ? "bg-indigo-500/10 text-indigo-400 font-medium" 
-          : "text-slate-400 hover:bg-white/5 hover:text-slate-200"
-      }`}
-    >
-      <div className={`${active ? "text-indigo-400" : "text-slate-500 group-hover:text-slate-300"} transition-colors`}>
-        {icon}
-      </div>
-      <span>{label}</span>
-    </button>
   );
 }
