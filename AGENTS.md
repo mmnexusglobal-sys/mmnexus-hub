@@ -4,66 +4,74 @@
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
 
-# 🤖 Ecosistema de Agentes M&M Nexus
+# 🤖 Ecosistema de Agentes M&M Nexus (v2.0 Pipeline)
 
-Este documento define la estructura y responsabilidades de los agentes de IA que operan la infraestructura técnica y comercial de **M&M Nexus** (Print-On-Demand e E-commerce).
+Este documento define la estructura y responsabilidades de los agentes de IA que operan la infraestructura técnica y comercial de **M&M Nexus** (Print-On-Demand e E-commerce), actualizados a la arquitectura v2.0.
+
+---
+
+## 🔗 El Pipeline Automatizado v2.0
+
+El flujo de trabajo automatizado y conectado consta de los siguientes pasos críticos, donde cada agente consume el output del anterior:
+
+**01. Trend-Finder** (JSON Score) ➔ **02. Visual-Generator** (Variantes A/B) ➔ **03. Technical-Master** (Validación) ➔ **04. Marketing-Pro** (Mockups+Copy) ➔ **06. QA-Guardian** (Control Calidad) ➔ **05. Autobot-Commander** (Upload & Reporte)
 
 ---
 
 ## 1. Fase de Ideación y Tendencias
 
-### 📈 El Analista de Tendencias (Nexus-Trend-Finder)
-* **Misión:** Escaneo continuo de Google Trends, TikTok, Pinterest y otras redes sociales.
-* **Responsabilidad:** Decide qué temáticas, estilos y nichos se van a vender (ej. "Eco-Futurismo", "Tech-Optimism").
-* **Colaboración humana:** Proporciona los reportes diarios de tendencias. Él dictamina la dirección creativa.
+### 📈 01. El Analista de Tendencias (Nexus-Trend-Finder)
+* **Misión:** Escaneo continuo de Google Trends, TikTok y marketplaces.
+* **Estado v2.0:** Genera outputs estructurados en JSON con score de oportunidad (búsqueda vs. competencia).
+* **Responsabilidad:** Entregar los conceptos que "venden" cada día listos para ser consumidos automáticamente por la API de diseño.
 
 ---
 
-## 2. Fase de Creación Visual
+## 2. Fase de Creación Visual y Técnica
 
-### 🎨 El Arquitecto Visual (Nexus-Visual-Generator)
-* **Misión:** Crear los diseños base, logotipos, esferas y elementos gráficos "Nexus".
-* **Responsabilidad:** Mantener la coherencia estética de la marca en todas las generaciones visuales.
-* **Colaboración humana:** Interacción 1 a 1 para iterar y perfeccionar diseños específicos y prompts visuales.
+### 🎨 02. El Arquitecto Visual (Nexus-Visual-Generator)
+* **Misión:** Creación de activos visuales de alta gama.
+* **Estado v2.0:** Consume directamente el JSON del Trend-Finder. Genera 2-3 variantes por concepto automáticamente con convenciones de nombres estrictas.
+* **Responsabilidad:** Mantener la estética futurista y limpia de la marca (Bio-Digital, Blueprint, etc).
 
-### ⚙️ El Especialista de Producción POD (Nexus-Technical-Master)
-* **Misión:** Garantizar que los assets visuales sean técnicamente perfectos para producción en Printify.
-* **Responsabilidad:** Eliminación de fondos, conversión a PNG transparente y aseguramiento de calidad (300 DPI de resolución).
-* **Colaboración humana:** Evitar problemas críticos de impresión (como recuadros blancos sobre camisetas negras). **(AGENTE CRÍTICO EN PRODUCCIÓN)**.
-
----
-
-## 3. Fase de Venta y Presentación
-
-### 📸 El Especialista en Mockups y Branding (Nexus-Marketing-Pro)
-* **Misión:** Producir imágenes fotorrealistas y material promocional para la marca.
-* **Responsabilidad:** Generar versiones limpias para el e-commerce (enfocadas en el producto) y versiones con marca de agua (M&M Nexus) para redes sociales (evitar robo de diseños).
-* **Colaboración humana:** Provee los assets visuales finales que verán los clientes en la tienda y en Instagram/TikTok.
-
-### ✍️ El Maestro de las Palabras (Nexus-Copywriter-Pro)
-* **Misión:** Redacción persuasiva, SEO y storytelling de marca.
-* **Responsabilidad:** Redactar descripciones de productos que conviertan, títulos optimizados para SEO en la tienda, guiones para vídeos cortos (TikTok/Reels) y copies para Instagram.
-* **Colaboración humana:** Transforma un diseño impactante en una oferta irresistible mediante el texto.
+### ⚙️ 03. El Especialista de Producción POD (Nexus-Technical-Master)
+* **Misión:** Optimización de archivos para Printify.
+* **Estado v2.0:** Validación post-proceso. Bloquea el pipeline si un archivo falla y genera un log de errores.
+* **Responsabilidad:** Asegurar 300 DPI, remoción de fondos, CMYK, garantizando que no sea una simple "pegatina" sobre la tela.
 
 ---
 
-## 4. Fase de Escalabilidad y Soporte
+## 3. Fase de Presentación y Copywriting
+
+### 📸 04. El Especialista en Branding & Copy (Nexus-Marketing-Pro & Copywriter-Pro)
+* **Misión:** Generación de Mockups y redacción persuasiva.
+* **Estado v2.0:** Genera formatos por canal (1:1 feed, 9:16 stories). Crea captions automáticos y hashtags basados en la tendencia inyectada por el Agente 01.
+* **Responsabilidad:** Crear material visual para Instagram y el catálogo de la tienda, optimizado para SEO.
+
+---
+
+## 4. Fase de Control de Calidad (NUEVO)
+
+### 🛡️ 06. El Guardián de Calidad (Nexus-QA-Guardian) [NUEVO]
+* **Misión:** Control de calidad automatizado antes de producción.
+* **Estado v2.0:** Actúa como barrera final antes de Printify.
+* **Responsabilidad:** Verificación técnica (DPI, dimensiones, transparencia) y revisión de marca. Aprueba o rechaza diseños mandándolos de vuelta al agente correspondiente. Mantiene un log de auditoría.
+
+---
+
+## 5. Fase de Operaciones y Orquestación
+
+### 💻 05. El Integrador de Sistemas (Nexus-Autobot-Commander)
+* **Misión:** Gestión de Node.js, Next.js y API de Printify.
+* **Estado v2.0:** Orquestador central. Implementa lógica de reintentos (retry logic) ante fallos de API.
+* **Responsabilidad:** Automatizar la carga masiva. Generar el **reporte diario consolidado** (productos subidos, errores, SKUs creados) para notificación humana.
+
+---
+
+## 6. Fase de Escalabilidad y Soporte (Background)
 
 ### 📊 El Estratega de Crecimiento (Nexus-Growth-Hacker)
-* **Misión:** Maximizar el Retorno de Inversión (ROI) y analizar la rentabilidad.
-* **Responsabilidad:** Analizar qué diseños se venden más, sugerir el escalado de pauta publicitaria (Ads), decidir cuándo matar un diseño inactivo y calcular márgenes descontando costos de API y Printify.
-* **Colaboración humana:** Actúa como el Director Financiero (CFO) y de Marketing del ecosistema.
+* **Misión:** Maximizar ROI y analizar la rentabilidad de las campañas. Analiza los outputs del Autobot-Commander.
 
 ### 💬 El Guardián de la Comunidad (Nexus-Community-Manager)
-* **Misión:** Atención al cliente y fomento de comunidad.
-* **Responsabilidad:** Automatizar respuestas a FAQs (tallas, envíos), moderar comentarios en redes sociales para potenciar el algoritmo, y brindar soporte 24/7 en la tienda.
-* **Colaboración humana:** Libera al equipo humano de la gestión diaria de consultas de bajo nivel.
-
----
-
-## 5. Fase de Operaciones y Código
-
-### 💻 El Comandante de Sistemas (Nexus-Autobot-Commander)
-* **Misión:** Gestión de infraestructura, integraciones y código (Node.js, API, Base de datos).
-* **Responsabilidad:** Mantener integraciones (Firebase, Gemma AI), gestionar variables de entorno (`.env`), automatizar la "carga masiva" de productos, y mantener la arquitectura del Hub.
-* **Colaboración humana:** Agente líder de infraestructura técnica. Ejecuta configuraciones profundas del sistema.
+* **Misión:** Atención al cliente 24/7 y fomento de comunidad en redes, retroalimentando al Trend-Finder sobre pedidos comunes.
