@@ -1,69 +1,55 @@
 {
-  "date": "2026-04-21",
+  "date": "2026-04-22",
   "niches": [
     {
-      "name": "Eco-Futurismo / Estilo de Vida Eco-Tecno",
-      "description": "La 'tecnología verde' está en su pico anual. Conceptos de energía solar, autos eléctricos y conciencia planetaria.",
+      "name": "Eco-Futurismo y Sostenibilidad Visual",
+      "description": "Diseños que mezclan tecnología avanzada con elementos botánicos (circuitos que parecen raíces, ciudades flotantes verdes).",
       "idealDesigns": [
-        "Bio-Digital Sphere",
-        "The Energy of the Future"
+        "Bio-Sphere"
+      ],
+      "recommendedProducts": [],
+      "emergingSubNiche": null
+    },
+    {
+      "name": "Minimalismo Técnico (Blueprint Art)",
+      "description": "Planos técnicos de objetos cotidianos o futuristas con estética limpia (fondo azul o negro con líneas cian).",
+      "idealDesigns": [
+        "Tech-Drone"
       ],
       "recommendedProducts": [
-        "Botellas de acero inoxidable",
-        "Sudaderas (hoodies) de algodón orgánico"
+        "Camisetas",
+        "Pósteres de Papel de Archivo",
+        "Fundas de Laptop Mate"
       ],
-      "emergingSubNiche": ""
+      "emergingSubNiche": null
     },
     {
-      "name": "Minimalismo Industrial",
-      "description": "Resurgimiento de diseños tipo 'esquema técnico' o 'Blueprint' en TikTok (usuarios valoran la 'ingeniería limpia').",
-      "idealDesigns": [
-        "Legacy Drone",
-        "diagramas funcionales"
-      ],
-      "recommendedProducts": [],
-      "emergingSubNiche": "Tech-Vintage Patent"
-    },
-    {
-      "name": "Tech-Optimism",
-      "description": "Alejado del cyberpunk oscuro; busca visuales brillantes, cian y blancos.",
-      "idealDesigns": [
-        "Solar Pulse"
-      ],
-      "recommendedProducts": [],
-      "emergingSubNiche": ""
-    },
-    {
-      "name": "Digital Nomad 2026 / IA & Mascotas",
-      "description": "Accesorios para trabajo remoto (Fundas de laptop geométricas, organizadores tech). Mascotas generadas por IA en estilos futuristas (cyberpunk). Altamente rentable en placas de acrílico y lienzos.",
+      "name": "Geopolítica Regional Tech",
+      "description": "Mapas estilizados de centros tecnológicos (como el de Uruguay). Interés creciente en el 'orgullo local tecnológico'.",
       "idealDesigns": [],
-      "recommendedProducts": [
-        "Fundas de laptop geométricas",
-        "Organizadores tech",
-        "Placas de acrílico",
-        "Lienzos"
-      ],
-      "emergingSubNiche": ""
+      "recommendedProducts": [],
+      "emergingSubNiche": null
     }
   ],
   "viralTrends": [
     {
-      "concept": "Energy Flow",
-      "description": "Circuitos que imitan el sistema circulatorio humano, ideal para la estética Bio-Digital."
+      "concept": "Green Tech Aesthetic",
+      "description": "Pico de búsquedas en Pinterest que impulsa el nicho de Eco-Futurismo y Sostenibilidad Visual."
+    },
+    {
+      "concept": "satisfying engineering videos",
+      "description": "Vídeos en TikTok que impulsan la venta de camisetas con estilo Minimalismo Técnico."
     }
   ],
   "socialSignals": {
-    "opportunity": "TikTok usando el hashtag `#EngineeringAesthetic`. Videos 'detrás de escena' de la creación de logos o diseños están generando mucho engagement.",
+    "opportunity": "Aprovechar la visibilidad en Pinterest sobre 'Green Tech Aesthetic' y la popularidad de los vídeos de 'satisfying engineering' en TikTok para diseños de Eco-Futurismo y Minimalismo Técnico.",
     "signals": [
-      "\"Cyber-Sustainablity\": +120% (Pinterest)",
-      "\"AI-Driven Art Gear\": +85% (TikTok)",
-      "\"Renewable Infrastructure\": +40% (LinkedIn/Google)"
+      "Pico de búsquedas en Pinterest sobre 'Green Tech Aesthetic'",
+      "Viralidad de vídeos de 'satisfying engineering' en TikTok"
     ]
   },
   "highConversionKeywords": [
-    "Futuristic Schematic",
-    "Clean Energy Evolution",
-    "Sustainable Tech Wear",
-    "M&M Nexus Original"
+    "Green Tech Aesthetic",
+    "orgullo local tecnológico"
   ]
 }
