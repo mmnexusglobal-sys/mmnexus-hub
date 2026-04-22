@@ -144,11 +144,13 @@ export default function Dashboard() {
               </div>
             </header>
 
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
               
-              {/* Concept Input Section */}
-              <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-6 md:p-8 backdrop-blur-xl relative overflow-hidden group">
-                <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl group-hover:bg-indigo-500/20 transition-colors duration-500"></div>
+              {/* Left Column - AI Generator */}
+              <div className="xl:col-span-2 space-y-8">
+                {/* Concept Input Section */}
+                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-6 md:p-8 backdrop-blur-xl relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl group-hover:bg-indigo-500/20 transition-colors duration-500"></div>
                 
                 <h3 className="text-xl font-semibold mb-6 flex items-center gap-3">
                   <Wand2 className="text-indigo-400" />
