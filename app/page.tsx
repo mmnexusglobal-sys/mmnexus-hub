@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
+
 import { 
   Wand2, Image as ImageIcon, Send, Share2, ShoppingBag, 
-  Settings, LayoutDashboard, Shirt, RefreshCw, CheckCircle2, AlertCircle, Loader2, Database
+  Settings, LayoutDashboard, Shirt, RefreshCw, CheckCircle2, AlertCircle, Loader2, Database, Layers
 } from "lucide-react";
 import GeneradorIA from "@/components/dashboard/GeneradorIA";
 import RedesSociales from "@/components/dashboard/RedesSociales";
 import Galeria from "@/components/dashboard/Galeria";
+import CargaMasiva from "@/components/dashboard/CargaMasiva";
 
 const SidebarItem = ({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active?: boolean, onClick: () => void }) => (
   <button 
@@ -22,7 +24,8 @@ const SidebarItem = ({ icon, label, active, onClick }: { icon: React.ReactNode, 
 export default function Dashboard() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [concept, setConcept] = useState("");
-  const [trendsInput, setTrendsInput] = useState("");
+  const [reportText, setReportText] = useState("");
+  const [isProcessingTrends, setIsProcessingTrends] = useState(false);
   const [decision, setDecision] = useState<any>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [printifyStatus, setPrintifyStatus] = useState<{ connected: boolean; shopName?: string; loading: boolean }>({ connected: false, loading: true });
@@ -68,19 +71,44 @@ export default function Dashboard() {
     }
   };
 
+  const handleProcessTrends = async () => {
+    if (!reportText) return;
+    setIsProcessingTrends(true);
+    try {
+      const res = await fetch("/api/ai/trends", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reportText }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("¡Tendencias actualizadas y guardadas con éxito!");
+        setReportText(""); // Clear after success
+      } else {
+        alert("Error al procesar: " + data.error);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error al procesar tendencias");
+    } finally {
+      setIsProcessingTrends(false);
+    }
+  };
+
   const handleGenerate = async () => {
     setIsGenerating(true);
     setDecision(null);
     try {
-      const fullPrompt = `${concept}\n\n${trendsInput ? `Contexto del Analista de Tendencias Diarias: ${trendsInput}` : ""}`.trim();
-      
       const res = await fetch("/api/ai/decision", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ concept: fullPrompt }),
+        body: JSON.stringify({ concept }),
       });
       const data = await res.json();
       setDecision(data);
+      if (!data.error) {
+        setActiveTab("Generador IA");
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -110,6 +138,7 @@ export default function Dashboard() {
           <div className="mt-8 mb-4">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Agentes</span>
           </div>
+          <SidebarItem icon={<Layers />} label="Carga Masiva" active={activeTab === "Carga Masiva"} onClick={() => setActiveTab("Carga Masiva")} />
           <SidebarItem icon={<Share2 />} label="Redes Sociales" active={activeTab === "Redes Sociales"} onClick={() => setActiveTab("Redes Sociales")} />
           <SidebarItem icon={<Settings />} label="Configuración" active={activeTab === "Configuración"} onClick={() => setActiveTab("Configuración")} />
         </nav>
@@ -122,6 +151,8 @@ export default function Dashboard() {
           <GeneradorIA decision={decision} imageUrl={imageUrl} setImageUrl={setImageUrl} />
         ) : activeTab === "Redes Sociales" ? (
           <RedesSociales decision={decision} imageUrl={imageUrl} />
+        ) : activeTab === "Carga Masiva" ? (
+          <CargaMasiva />
         ) : activeTab === "Galería" ? (
           <Galeria />
         ) : activeTab === "Dashboard" ? (
@@ -161,6 +192,35 @@ export default function Dashboard() {
               
               {/* Left Column - AI Generator */}
               <div className="xl:col-span-2 space-y-8">
+                
+                {/* Trend Ingestion Form */}
+                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-6 md:p-8 backdrop-blur-xl relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-colors duration-500"></div>
+                  
+                  <h3 className="text-xl font-semibold mb-6 flex items-center gap-3">
+                    <Database className="text-emerald-400" />
+                    Procesador de Tendencias Diarias
+                  </h3>
+                  
+                  <div className="flex flex-col gap-4 relative z-10">
+                    <label className="text-sm font-medium text-slate-300 block">Pega el reporte en texto de tu analista aquí:</label>
+                    <textarea 
+                      value={reportText}
+                      onChange={(e) => setReportText(e.target.value)}
+                      placeholder="Ej. 'Hoy detectamos una subida del 120% en Pinterest sobre el diseño eco-futurista...'"
+                      className="w-full h-28 bg-slate-900/50 border border-white/10 rounded-xl p-4 text-sm text-slate-200 focus:outline-none focus:border-emerald-500/50 resize-none transition-colors"
+                    />
+                    <button 
+                      onClick={handleProcessTrends}
+                      disabled={isProcessingTrends || !reportText}
+                      className="self-end bg-white/5 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:border-emerald-500/50 font-medium py-2.5 px-6 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isProcessingTrends ? <Loader2 className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
+                      {isProcessingTrends ? "Estructurando JSON..." : "Procesar y Guardar Tendencias"}
+                    </button>
+                  </div>
+                </div>
+
                 {/* Concept Input Section */}
                 <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-6 md:p-8 backdrop-blur-xl relative overflow-hidden group">
                   <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl group-hover:bg-indigo-500/20 transition-colors duration-500"></div>
@@ -170,36 +230,26 @@ export default function Dashboard() {
                   Agente Decisor: Producto y Copy
                 </h3>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
                   {/* Input Area */}
                   <div className="flex flex-col gap-4">
-                    <div>
-                      <label className="text-sm font-medium text-slate-300 mb-2 block">Reporte Diario de Tendencias</label>
-                      <textarea 
-                        value={trendsInput}
-                        onChange={(e) => setTrendsInput(e.target.value)}
-                        placeholder="Pega aquí el reporte del analista (Ej. 'Hoy es tendencia el Lo-Fi y los colores pastel...')"
-                        className="w-full h-24 bg-slate-900/50 border border-white/10 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500/50 resize-none transition-colors"
-                      />
-                    </div>
-                    
                     <div>
                       <label className="text-sm font-medium text-slate-300 mb-2 block">Concepto o Nicho de Diseño</label>
                       <textarea 
                         value={concept}
                         onChange={(e) => setConcept(e.target.value)}
                         placeholder="Ej. Gatos samurai cyberpunk en Tokyo..."
-                        className="w-full h-24 bg-slate-900/50 border border-white/10 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500/50 resize-none transition-colors"
+                        className="w-full h-32 bg-slate-900/50 border border-white/10 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500/50 resize-none transition-colors"
                       />
                     </div>
                     
                     <button 
                       onClick={handleGenerate}
                       disabled={isGenerating || !concept}
-                      className="w-full bg-linear-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-medium py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-500/25 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed mt-2"
+                      className="w-full bg-linear-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-medium py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-500/25 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                     {isGenerating ? <RefreshCw className="w-5 h-5 animate-spin" /> : <Wand2 className="w-5 h-5" />}
-                    {isGenerating ? "Procesando Nicho..." : "Analizar con IA"}
+                    {isGenerating ? "Procesando..." : "Analizar con IA (Usa Tendencias Guardadas)"}
                   </button>
                 </div>
 

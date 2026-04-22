@@ -35,7 +35,8 @@ Tu respuesta DEBE ser ÚNICAMENTE un JSON válido con esta estructura exacta (si
   "reason": "Explicación breve en español de por qué elegiste este producto",
   "shopifyTitle": "Title in English for the US Market",
   "socialCopy": "Catchy Instagram/TikTok caption in English with great hook",
-  "seoTags": ["english", "tags", "only"]
+  "seoTags": ["english", "tags", "only"],
+  "imagePrompt": "A highly detailed, production-ready Midjourney/DALL-E style prompt in English describing the visual art to be generated. Include style, lighting, subjects, and isolated background instructions."
 }
 REGLA CRÍTICA: Tu única salida debe ser un objeto JSON válido. NO incluyas markdown, NO incluyas saludos, NO incluyas explicaciones previas ni razonamientos. Solo el JSON.
 `;

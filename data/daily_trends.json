@@ -1,26 +1,49 @@
-﻿{
+{
   "date": "2026-04-21",
   "niches": [
     {
       "name": "Eco-Futurismo / Estilo de Vida Eco-Tecno",
-      "description": "Conceptos de energía solar, autos eléctricos y conciencia planetaria. El concepto de 'tecnología verde' está en su pico anual.",
-      "idealDesigns": ["Bio-Digital Sphere", "The Energy of the Future"],
-      "recommendedProducts": ["Botellas de acero inoxidable", "Hoodies de algodón orgánico"]
+      "description": "La 'tecnología verde' está en su pico anual. Conceptos de energía solar, autos eléctricos y conciencia planetaria.",
+      "idealDesigns": [
+        "Bio-Digital Sphere",
+        "The Energy of the Future"
+      ],
+      "recommendedProducts": [
+        "Botellas de acero inoxidable",
+        "Sudaderas (hoodies) de algodón orgánico"
+      ],
+      "emergingSubNiche": ""
     },
     {
       "name": "Minimalismo Industrial",
-      "description": "Resurgimiento de diseños tipo 'esquema técnico' o 'Blueprint'. Los usuarios valoran la 'ingeniería limpia'.",
-      "idealDesigns": ["Legacy Drone", "Diagramas funcionales"],
-      "emergingSubNiche": "Tech-Vintage Patent (dibujos estilo patente de inventos futuristas sobre fondos crema o azul marino)"
+      "description": "Resurgimiento de diseños tipo 'esquema técnico' o 'Blueprint' en TikTok (usuarios valoran la 'ingeniería limpia').",
+      "idealDesigns": [
+        "Legacy Drone",
+        "diagramas funcionales"
+      ],
+      "recommendedProducts": [],
+      "emergingSubNiche": "Tech-Vintage Patent"
     },
     {
       "name": "Tech-Optimism",
       "description": "Alejado del cyberpunk oscuro; busca visuales brillantes, cian y blancos.",
-      "idealDesigns": ["Solar Pulse"]
+      "idealDesigns": [
+        "Solar Pulse"
+      ],
+      "recommendedProducts": [],
+      "emergingSubNiche": ""
     },
     {
       "name": "Digital Nomad 2026 / IA & Mascotas",
-      "description": "Accesorios para trabajo remoto y retratos de mascotas generados por IA en estilos futuristas (cyberpunk). Altamente rentable."
+      "description": "Accesorios para trabajo remoto (Fundas de laptop geométricas, organizadores tech). Mascotas generadas por IA en estilos futuristas (cyberpunk). Altamente rentable en placas de acrílico y lienzos.",
+      "idealDesigns": [],
+      "recommendedProducts": [
+        "Fundas de laptop geométricas",
+        "Organizadores tech",
+        "Placas de acrílico",
+        "Lienzos"
+      ],
+      "emergingSubNiche": ""
     }
   ],
   "viralTrends": [
@@ -30,10 +53,12 @@
     }
   ],
   "socialSignals": {
-    "Cyber-Sustainablity": "+120% (Pinterest)",
-    "AI-Driven Art Gear": "+85% (TikTok)",
-    "Renewable Infrastructure": "+40% (LinkedIn/Google)",
-    "opportunity": "TikTok usando el hashtag #EngineeringAesthetic. Videos 'detrás de escena' de la creación de logos."
+    "opportunity": "TikTok usando el hashtag `#EngineeringAesthetic`. Videos 'detrás de escena' de la creación de logos o diseños están generando mucho engagement.",
+    "signals": [
+      "\"Cyber-Sustainablity\": +120% (Pinterest)",
+      "\"AI-Driven Art Gear\": +85% (TikTok)",
+      "\"Renewable Infrastructure\": +40% (LinkedIn/Google)"
+    ]
   },
   "highConversionKeywords": [
     "Futuristic Schematic",

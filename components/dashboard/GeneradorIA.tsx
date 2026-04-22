@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Image as ImageIcon, Sparkles, Loader2, Download, CheckCircle2 } from "lucide-react";
 
 export default function GeneradorIA({ 
@@ -13,6 +13,30 @@ export default function GeneradorIA({
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
+  const autoTriggered = useRef(false);
+
+  useEffect(() => {
+    if (decision?.imagePrompt && decision.imagePrompt !== prompt) {
+      setPrompt(decision.imagePrompt);
+      // Auto-trigger image generation if we just got a new decision and haven't auto-triggered yet
+      if (!imageUrl && !isGenerating && !autoTriggered.current) {
+        autoTriggered.current = true;
+        // Small delay to allow state to settle
+        setTimeout(() => {
+          const btn = document.getElementById('auto-generate-btn');
+          if (btn) btn.click();
+        }, 500);
+      }
+    }
+  }, [decision, imageUrl, isGenerating, prompt]);
+
+  // Reset autoTriggered when decision changes significantly or is null
+  useEffect(() => {
+    if (!decision) {
+      autoTriggered.current = false;
+      setPrompt("");
+    }
+  }, [decision]);
 
   const handleGenerate = async () => {
     if (!prompt) return;
@@ -102,6 +126,7 @@ export default function GeneradorIA({
             placeholder="Ej: Un perro astronauta flotando en el espacio profundo con estilo pop art brillante, colores neón, aislado sobre fondo transparente."
           />
           <button
+            id="auto-generate-btn"
             onClick={handleGenerate}
             disabled={!prompt || isGenerating}
             className={`w-full mt-4 font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all ${
