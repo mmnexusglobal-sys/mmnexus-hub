@@ -9,10 +9,34 @@ export default function RedesSociales({ decision, imageUrl }: { decision: any, i
 
   const handlePublishIG = async () => {
     setIsPublishingLoading(true);
-    // Simular llamada a la Graph API de Meta
-    await new Promise(resolve => setTimeout(resolve, 2500));
-    setIsPublishingIg(true);
-    setIsPublishingLoading(false);
+    try {
+      const webhookUrl = "https://hook.us2.make.com/9ilpq8g9m1jrnmcljmwberd656ub8dxj";
+      const tags = decision.seoTags || ["streetwear", "design", "art"];
+      const formattedTags = tags.map((t: string) => `#${t.replace(/\s+/g, '')}`).join(" ");
+      const finalCopy = `${decision.socialCopy}\n\n${formattedTags}`;
+
+      const res = await fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          imageUrl: imageUrl,
+          socialCopy: finalCopy,
+          productType: decision.productType || "Diseño",
+          platform: "Instagram"
+        }),
+      });
+
+      if (res.ok) {
+        setIsPublishingIg(true);
+      } else {
+        alert("Error al enviar a Make.com: " + res.statusText);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Fallo de conexión con el Webhook.");
+    } finally {
+      setIsPublishingLoading(false);
+    }
   };
 
   if (!decision || !imageUrl) {
