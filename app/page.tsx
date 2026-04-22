@@ -57,14 +57,15 @@ export default function Dashboard() {
   };
 
   const handleGenerate = async () => {
-    if (!concept) return;
     setIsGenerating(true);
     setDecision(null);
     try {
+      const fullPrompt = `${concept}\n\n${trendsInput ? `Contexto del Analista de Tendencias Diarias: ${trendsInput}` : ""}`.trim();
+      
       const res = await fetch("/api/ai/decision", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ concept }),
+        body: JSON.stringify({ concept: fullPrompt }),
       });
       const data = await res.json();
       setDecision(data);
@@ -84,36 +85,23 @@ export default function Dashboard() {
           <div className="w-10 h-10 rounded-xl bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
             <Wand2 className="w-5 h-5 text-white" />
           </div>
-          <h1 className="text-xl font-bold bg-clip-text text-transparent bg-linear-to-r from-white to-slate-400">MMNexus</h1>
+          <span className="font-bold text-xl tracking-tight">MMNexus</span>
         </div>
-        
-        <nav className="flex-1 space-y-2">
-          {[
-            { icon: LayoutDashboard, label: "Dashboard" },
-            { icon: ImageIcon, label: "Generador IA" },
-            { icon: Shirt, label: "Printify Products" },
-            { icon: ShoppingBag, label: "E-Commerce" },
-            { icon: Share2, label: "Redes Sociales" },
-          ].map((item, i) => {
-            const isActive = activeTab === item.label;
-            return (
-              <button 
-                key={i} 
-                onClick={() => setActiveTab(item.label)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive ? "bg-indigo-500/10 text-indigo-400 border border-indigo-500/20" : "text-slate-400 hover:bg-white/5 hover:text-slate-200"}`}
-              >
-                <item.icon className="w-5 h-5" />
-                <span className="font-medium">{item.label}</span>
-              </button>
-            );
-          })}
+
+        <nav className="flex flex-col gap-2">
+          <SidebarItem icon={<LayoutDashboard />} label="Dashboard" active={activeTab === "Dashboard"} onClick={() => setActiveTab("Dashboard")} />
+          <SidebarItem icon={<ImageIcon />} label="Generador IA" active={activeTab === "Generador IA"} onClick={() => setActiveTab("Generador IA")} />
+          <SidebarItem icon={<Shirt />} label="Printify Products" active={activeTab === "Printify Products"} onClick={() => setActiveTab("Printify Products")} />
+          <SidebarItem icon={<ShoppingBag />} label="E-Commerce" active={activeTab === "E-Commerce"} onClick={() => setActiveTab("E-Commerce")} />
+          
+          <div className="mt-8 mb-4">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Agentes</span>
+          </div>
+          <SidebarItem icon={<Share2 />} label="Redes Sociales" active={activeTab === "Redes Sociales"} onClick={() => setActiveTab("Redes Sociales")} />
         </nav>
-        
-        <div className="pt-6 border-t border-white/10">
-          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-all">
-            <Settings className="w-5 h-5" />
-            <span className="font-medium">Configuración</span>
-          </button>
+
+        <div className="mt-auto">
+          <SidebarItem icon={<Settings />} label="Configuración" onClick={() => {}} />
         </div>
       </aside>
 
@@ -127,44 +115,74 @@ export default function Dashboard() {
           <>
             <header className="flex justify-between items-center mb-12">
               <div>
-                <h2 className="text-3xl font-bold mb-2">Workspace Central</h2>
-                <p className="text-slate-400">Automatiza la creación y distribución de tus productos.</p>
+                <h1 className="text-3xl font-bold mb-2">MMNexus Hub</h1>
+                <p className="text-slate-400">Automatización Print On Demand & E-Commerce AI</p>
               </div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-2 rounded-full text-sm font-medium">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              Sistema en línea
-            </div>
-          </div>
-        </header>
+              
+              {/* Status Badge */}
+              <div className="flex items-center gap-4 bg-white/[0.02] border border-white/10 rounded-full px-4 py-2">
+                <div className="flex items-center gap-2">
+                  <div className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                  </div>
+                  <span className="text-sm font-medium text-slate-300">Gemma 4 Activa</span>
+                </div>
+                <div className="w-px h-4 bg-white/10"></div>
+                <div className="flex items-center gap-2">
+                  {printifyStatus.loading ? (
+                    <Loader2 className="w-4 h-4 text-slate-400 animate-spin" />
+                  ) : printifyStatus.connected ? (
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  ) : (
+                    <AlertCircle className="w-4 h-4 text-rose-500" />
+                  )}
+                  <span className="text-sm font-medium text-slate-300">
+                    {printifyStatus.loading ? "Conectando Printify..." : printifyStatus.shopName || "Printify"}
+                  </span>
+                </div>
+              </div>
+            </header>
 
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-          
-          {/* Left Column - AI Generator */}
-          <div className="xl:col-span-2 space-y-8">
-            <div className="bg-white/[0.02] border border-white/10 rounded-xl p-8 backdrop-blur-sm relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
               
-              <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
-                <Wand2 className="w-5 h-5 text-indigo-400" />
-                Agente Decisor: Producto y Copy
-              </h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Input Area */}
-                <div className="flex flex-col">
-                  <label className="text-sm font-medium text-slate-300 mb-2">Concepto o Nicho de Diseño</label>
-                  <textarea 
-                    value={concept}
-                    onChange={(e) => setConcept(e.target.value)}
-                    placeholder="Ej. Gatos samurai cyberpunk en Tokyo..."
-                    className="flex-1 w-full bg-slate-900/50 border border-white/10 rounded-xl p-4 text-sm text-slate-200 focus:outline-none focus:border-indigo-500/50 resize-none transition-colors mb-4"
-                  />
-                  <button 
-                    onClick={handleGenerate}
-                    disabled={isGenerating || !concept}
-                    className="w-full bg-linear-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-medium py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-500/25 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
-                  >
+              {/* Concept Input Section */}
+              <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-6 md:p-8 backdrop-blur-xl relative overflow-hidden group">
+                <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl group-hover:bg-indigo-500/20 transition-colors duration-500"></div>
+                
+                <h3 className="text-xl font-semibold mb-6 flex items-center gap-3">
+                  <Wand2 className="text-indigo-400" />
+                  Agente Decisor: Producto y Copy
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Input Area */}
+                  <div className="flex flex-col gap-4">
+                    <div>
+                      <label className="text-sm font-medium text-slate-300 mb-2 block">Reporte Diario de Tendencias</label>
+                      <textarea 
+                        value={trendsInput}
+                        onChange={(e) => setTrendsInput(e.target.value)}
+                        placeholder="Pega aquí el reporte del analista (Ej. 'Hoy es tendencia el Lo-Fi y los colores pastel...')"
+                        className="w-full h-24 bg-slate-900/50 border border-white/10 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500/50 resize-none transition-colors"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="text-sm font-medium text-slate-300 mb-2 block">Concepto o Nicho de Diseño</label>
+                      <textarea 
+                        value={concept}
+                        onChange={(e) => setConcept(e.target.value)}
+                        placeholder="Ej. Gatos samurai cyberpunk en Tokyo..."
+                        className="w-full h-24 bg-slate-900/50 border border-white/10 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500/50 resize-none transition-colors"
+                      />
+                    </div>
+                    
+                    <button 
+                      onClick={handleGenerate}
+                      disabled={isGenerating || !concept}
+                      className="w-full bg-linear-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-medium py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-500/25 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed mt-2"
+                    >
                     {isGenerating ? <RefreshCw className="w-5 h-5 animate-spin" /> : <Wand2 className="w-5 h-5" />}
                     {isGenerating ? "Procesando Nicho..." : "Analizar con IA"}
                   </button>

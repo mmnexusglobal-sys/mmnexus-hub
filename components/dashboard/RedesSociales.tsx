@@ -25,15 +25,15 @@ export default function RedesSociales({ decision, imageUrl }: { decision: any, i
         <p className="text-slate-400">Distribución automática de contenido y mockups promocionales.</p>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="flex flex-col lg:flex-row gap-8 items-start">
         
         {/* Left Column - Preview */}
-        <div className="lg:col-span-1 space-y-6">
+        <div className="w-full lg:w-1/3 space-y-6 shrink-0">
           <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
             <h3 className="font-semibold text-slate-200 mb-4 flex items-center gap-2">
               <ImageIcon className="w-4 h-4 text-slate-400" /> Asset Principal
             </h3>
-            <div className="w-full aspect-square rounded-xl overflow-hidden bg-black/50 border border-white/10 mb-4">
+            <div className="w-full max-h-[400px] flex items-center justify-center rounded-xl overflow-hidden bg-black/50 border border-white/10 mb-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={imageUrl} alt="Generated Art" className="w-full h-full object-contain" />
             </div>
@@ -45,7 +45,7 @@ export default function RedesSociales({ decision, imageUrl }: { decision: any, i
         </div>
 
         {/* Right Column - Social Channels */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="w-full lg:w-2/3 space-y-6">
           
           {/* Instagram Post */}
           <div className="bg-linear-to-br from-pink-500/10 to-orange-500/10 border border-pink-500/20 rounded-2xl p-6 relative overflow-hidden">
