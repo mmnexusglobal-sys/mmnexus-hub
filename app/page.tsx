@@ -21,12 +21,24 @@ const SidebarItem = ({ icon, label, active, onClick }: { icon: React.ReactNode, 
   </button>
 );
 
+interface DecisionData {
+  error?: string;
+  rawOutput?: string;
+  productType?: string;
+  blueprintId?: string | number;
+  reason?: string;
+  shopifyTitle?: string;
+  socialCopy?: string;
+  seoTags?: string[];
+  [key: string]: unknown;
+}
+
 export default function Dashboard() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [concept, setConcept] = useState("");
   const [reportText, setReportText] = useState("");
   const [isProcessingTrends, setIsProcessingTrends] = useState(false);
-  const [decision, setDecision] = useState<Record<string, unknown> | null>(null);
+  const [decision, setDecision] = useState<DecisionData | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [printifyStatus, setPrintifyStatus] = useState<{ connected: boolean; shopName?: string; loading: boolean }>({ connected: false, loading: true });
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -48,7 +60,6 @@ export default function Dashboard() {
   const handleExecutePipeline = async () => {
     if (!decision) return;
     setPipelineExecuting(true);
-    setPipelineResult(null);
     try {
       const res = await fetch("/api/printify/create", {
         method: "POST",
