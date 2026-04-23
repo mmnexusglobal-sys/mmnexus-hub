@@ -137,7 +137,7 @@ export default function CargaMasiva() {
           {isProcessing || progress.total > 0 ? (
             <div className="mb-6 bg-white/2 p-4 rounded-xl border border-white/5">
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-slate-400">Generando: <span className="text-pink-400 font-medium">{progress.currentConcept}</span></span>
+                <span className="text-slate-400">Generando: <span className="whitespace-pre-wrap text-pink-400 font-medium">{progress.currentConcept}</span></span>
                 <span className="text-slate-300 font-bold">{progress.current} / {progress.total}</span>
               </div>
               <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">

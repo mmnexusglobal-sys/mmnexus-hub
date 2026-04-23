@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { Image as ImageIcon, Sparkles, Loader2, Download, CheckCircle2 } from "lucide-react";
 
+import { DecisionData } from "@/lib/validations";
+
 export default function GeneradorIA({ 
   decision, 
   imageUrl, 
   setImageUrl 
 }: { 
-  decision: any; 
+  decision: Partial<DecisionData> | null; 
   imageUrl: string | null; 
   setImageUrl: (url: string | null) => void;
 }) {
@@ -115,7 +117,7 @@ export default function GeneradorIA({
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left Column - Controls */}
-        <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
+        <div className="bg-white/2 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
           <label className="block text-sm font-medium text-slate-300 mb-3">
             Prompt de Diseño (Visual-Generator)
           </label>
@@ -154,7 +156,7 @@ export default function GeneradorIA({
         </div>
 
         {/* Right Column - Preview */}
-        <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-6 backdrop-blur-xl flex flex-col items-center justify-center min-h-[400px]">
+        <div className="bg-white/2 border border-white/10 rounded-2xl p-6 backdrop-blur-xl flex flex-col items-center justify-center min-h-[400px]">
           {isGenerating ? (
             <div className="flex flex-col items-center justify-center text-indigo-400 animate-pulse">
               <Sparkles className="w-12 h-12 mb-4" />

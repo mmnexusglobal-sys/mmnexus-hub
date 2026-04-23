@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Share2, Camera, Music2, MapPin, Hash, CheckCircle2, Loader2, Video } from "lucide-react";
 
-export default function RedesSociales({ decision, imageUrl }: { decision: any, imageUrl: string | null }) {
+import { DecisionData } from "@/lib/validations";
+
+export default function RedesSociales({ decision, imageUrl }: { decision: Partial<DecisionData> | null, imageUrl: string | null }) {
   const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [isPublishingLoading, setIsPublishingLoading] = useState(false);
@@ -104,7 +106,7 @@ export default function RedesSociales({ decision, imageUrl }: { decision: any, i
         
         {/* Left Column - Preview */}
         <div className="w-full lg:w-1/3 space-y-6 shrink-0">
-          <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
+          <div className="bg-white/2 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
             <h3 className="font-semibold text-slate-200 mb-4 flex items-center gap-2">
               <ImageIcon className="w-4 h-4 text-slate-400" /> Asset Principal
             </h3>

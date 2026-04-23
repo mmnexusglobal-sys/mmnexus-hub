@@ -60,7 +60,7 @@ export async function POST(request: Request) {
       const result = await model.generateContent(prompt);
       responseText = result.response.text();
     } catch (apiError: unknown) {
-      console.warn("Fallo con gemini-1.5-flash. Intentando fallback (gemini-2.5-flash)...");
+      console.warn("Fallo con gemini-1.5-flash. Intentando fallback (gemini-2.5-flash)...", apiError);
       const fallbackModel = getGemmaModel("gemini-2.5-flash");
       const fallbackResult = await fallbackModel.generateContent(prompt);
       responseText = fallbackResult.response.text();
