@@ -1,8 +1,9 @@
 import { printifyCatalog, CatalogProductType } from "./catalog";
-import type { Decision } from "@/lib/domain/decision";
+import type { DecisionData } from "@/lib/validations";
 
-export function resolvePrintifyProduct(decision: Decision) {
-  const product = printifyCatalog[decision.productType as CatalogProductType];
+export function resolvePrintifyProduct(decision: DecisionData) {
+  const typeStr = (decision.productType || "").toUpperCase().replace("-", "_");
+  const product = printifyCatalog[typeStr as CatalogProductType] || printifyCatalog.T_SHIRT;
   if (!product) {
     throw new Error(`Unsupported productType: ${decision.productType}`);
   }

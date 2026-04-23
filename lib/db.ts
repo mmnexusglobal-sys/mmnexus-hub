@@ -10,7 +10,7 @@ export interface SavedDesign {
   shopifyTitle: string;
   seoTags: string[];
   productType: string;
-  createdAt: any;
+  createdAt: Timestamp | string;
 }
 
 // Verifica si Firebase está configurado correctamente
@@ -20,7 +20,7 @@ const isFirebaseConfigured = () => {
 
 // Función para guardar un diseño
 export const saveDesign = async (designData: Omit<SavedDesign, "id" | "createdAt">) => {
-  if (isFirebaseConfigured()) {
+  if (isFirebaseConfigured() && db) {
     try {
       const docRef = await addDoc(collection(db, "designs"), {
         ...designData,
@@ -48,7 +48,7 @@ export const saveDesign = async (designData: Omit<SavedDesign, "id" | "createdAt
 
 // Función para obtener todos los diseños guardados
 export const getSavedDesigns = async (): Promise<SavedDesign[]> => {
-  if (isFirebaseConfigured()) {
+  if (isFirebaseConfigured() && db) {
     try {
       const q = query(collection(db, "designs"), orderBy("createdAt", "desc"));
       const querySnapshot = await getDocs(q);
@@ -73,7 +73,7 @@ export const getSavedDesigns = async (): Promise<SavedDesign[]> => {
 
 // Función para eliminar un diseño
 export const deleteDesign = async (id: string): Promise<boolean> => {
-  if (isFirebaseConfigured()) {
+  if (isFirebaseConfigured() && db) {
     try {
       const { doc, deleteDoc } = await import("firebase/firestore");
       await deleteDoc(doc(db, "designs", id));
