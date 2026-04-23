@@ -21,17 +21,7 @@ const SidebarItem = ({ icon, label, active, onClick }: { icon: React.ReactNode, 
   </button>
 );
 
-interface DecisionData {
-  error?: string;
-  rawOutput?: string;
-  productType?: string;
-  blueprintId?: string | number;
-  reason?: string;
-  shopifyTitle?: string;
-  socialCopy?: string;
-  seoTags?: string[];
-  [key: string]: unknown;
-}
+import { DecisionData } from "@/lib/validations";
 
 export default function Dashboard() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -140,7 +130,7 @@ export default function Dashboard() {
         <nav className="flex flex-col gap-2">
           <SidebarItem icon={<LayoutDashboard />} label="Dashboard" active={activeTab === "Dashboard"} onClick={() => setActiveTab("Dashboard")} />
           <SidebarItem icon={<ImageIcon />} label="Generador IA" active={activeTab === "Generador IA"} onClick={() => setActiveTab("Generador IA")} />
-          <SidebarItem icon={<Database />} label="Galería" active={activeTab === "Galería"} onClick={() => setActiveTab("Galería")} />
+          <SidebarItem icon={<Database />} label="Galeria" active={activeTab === "Galeria"} onClick={() => setActiveTab("Galeria")} />
           <SidebarItem icon={<Shirt />} label="Printify Products" active={activeTab === "Printify Products"} onClick={() => setActiveTab("Printify Products")} />
           <SidebarItem icon={<ShoppingBag />} label="E-Commerce" active={activeTab === "E-Commerce"} onClick={() => setActiveTab("E-Commerce")} />
           
@@ -149,7 +139,7 @@ export default function Dashboard() {
           </div>
           <SidebarItem icon={<Layers />} label="Carga Masiva" active={activeTab === "Carga Masiva"} onClick={() => setActiveTab("Carga Masiva")} />
           <SidebarItem icon={<Share2 />} label="Redes Sociales" active={activeTab === "Redes Sociales"} onClick={() => setActiveTab("Redes Sociales")} />
-          <SidebarItem icon={<Settings />} label="Configuración" active={activeTab === "Configuración"} onClick={() => setActiveTab("Configuración")} />
+          <SidebarItem icon={<Settings />} label="Configuracion" active={activeTab === "Configuracion"} onClick={() => setActiveTab("Configuracion")} />
         </nav>
       </aside>
 
@@ -162,7 +152,7 @@ export default function Dashboard() {
           <RedesSociales decision={decision} imageUrl={imageUrl} />
         ) : activeTab === "Carga Masiva" ? (
           <CargaMasiva />
-        ) : activeTab === "Galería" ? (
+        ) : activeTab === "Galeria" ? (
           <Galeria />
         ) : activeTab === "Dashboard" ? (
           <>

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getGemmaModel } from "@/lib/gemma";
 import fs from "fs";
 import path from "path";
+import { z } from "zod";
+import { DecisionSchema } from "@/lib/validations";
 
 const getDailyTrends = () => {
   try {
@@ -96,10 +98,12 @@ export async function POST(request: Request) {
     
     try {
       const decision = JSON.parse(cleanJson);
-      return NextResponse.json(decision);
+      // Validamos fuertemente con Zod
+      const validatedData = DecisionSchema.parse(decision);
+      return NextResponse.json(validatedData);
     } catch (parseError: any) {
-      console.error("JSON Parse Error. Cleaned text was:", cleanJson);
-      return NextResponse.json({ error: "JSON Parse Error: " + parseError.message, rawOutput: responseText }, { status: 500 });
+      console.error("JSON or Validation Error. Cleaned text was:", cleanJson, parseError);
+      return NextResponse.json({ error: "Validation Error: " + parseError.message, rawOutput: responseText }, { status: 500 });
     }
 
   } catch (error: any) {
