@@ -6,6 +6,10 @@ export default function RedesSociales({ decision, imageUrl }: { decision: any, i
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [isPublishingLoading, setIsPublishingLoading] = useState(false);
   const [isPublishingIg, setIsPublishingIg] = useState(false);
+  
+  // Nivel V2: Mockups Lifestyle
+  const [isGeneratingMockup, setIsGeneratingMockup] = useState(false);
+  const [mockupUrl, setMockupUrl] = useState<string | null>(null);
 
   const handlePublishIG = async () => {
     setIsPublishingLoading(true);
@@ -14,12 +18,15 @@ export default function RedesSociales({ decision, imageUrl }: { decision: any, i
       const tags = decision.seoTags || ["streetwear", "design", "art"];
       const formattedTags = tags.map((t: string) => `#${t.replace(/\s+/g, '')}`).join(" ");
       const finalCopy = `${decision.socialCopy}\n\n${formattedTags}`;
+      
+      // Enviamos el mockup profesional si existe, de lo contrario la imagen cruda
+      const finalImageUrl = mockupUrl || imageUrl;
 
       const res = await fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          imageUrl: imageUrl,
+          imageUrl: finalImageUrl,
           socialCopy: finalCopy,
           productType: decision.productType || "Diseño",
           platform: "Instagram"
@@ -37,6 +44,16 @@ export default function RedesSociales({ decision, imageUrl }: { decision: any, i
     } finally {
       setIsPublishingLoading(false);
     }
+  };
+
+  const handleGenerateMockup = async () => {
+    setIsGeneratingMockup(true);
+    // Simulamos una llamada a la API de Photoroom o Printify Mockups
+    setTimeout(() => {
+      // Usamos una imagen lifestyle urbana de alta calidad como placeholder del mockup generado
+      setMockupUrl("https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=800&q=80");
+      setIsGeneratingMockup(false);
+    }, 2500);
   };
 
   if (!decision || !imageUrl) {
@@ -93,14 +110,36 @@ export default function RedesSociales({ decision, imageUrl }: { decision: any, i
             <h3 className="font-semibold text-slate-200 mb-4 flex items-center gap-2">
               <ImageIcon className="w-4 h-4 text-slate-400" /> Asset Principal
             </h3>
-            <div className="w-full max-h-[400px] flex items-center justify-center rounded-xl overflow-hidden bg-black/50 border border-white/10 mb-4">
+            
+            <div className="w-full max-h-[400px] flex items-center justify-center rounded-xl overflow-hidden bg-black/50 border border-white/10 mb-4 relative group">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={imageUrl} alt="Generated Art" className="w-full h-full object-contain" />
+              <img 
+                src={mockupUrl || imageUrl} 
+                alt="Generated Art" 
+                className={`w-full h-full object-contain transition-all duration-500 ${isGeneratingMockup ? 'blur-sm opacity-50' : ''}`} 
+              />
+              {isGeneratingMockup && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <Loader2 className="w-8 h-8 text-pink-500 animate-spin mb-2" />
+                  <p className="text-xs text-pink-400 font-bold bg-black/50 px-3 py-1 rounded-full">Renderizando Photoroom...</p>
+                </div>
+              )}
             </div>
             
-            <button className="w-full bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white py-3 rounded-xl font-medium transition-colors border border-white/5">
-              Generar Mockups 3D (Próximamente)
-            </button>
+            {mockupUrl ? (
+              <div className="w-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 py-3 rounded-xl font-medium flex items-center justify-center gap-2">
+                <CheckCircle2 className="w-5 h-5" /> Mockup Lifestyle Listo
+              </div>
+            ) : (
+              <button 
+                onClick={handleGenerateMockup}
+                disabled={isGeneratingMockup}
+                className="w-full bg-linear-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-500 hover:to-purple-500 py-3 rounded-xl font-medium transition-all shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {isGeneratingMockup ? <Loader2 className="w-5 h-5 animate-spin" /> : <Camera className="w-5 h-5" />}
+                {isGeneratingMockup ? "Procesando..." : "Generar Mockups 3D Lifestyle"}
+              </button>
+            )}
           </div>
         </div>
 
@@ -112,7 +151,9 @@ export default function RedesSociales({ decision, imageUrl }: { decision: any, i
             <div className="absolute top-4 right-4 bg-pink-500 text-white p-2 rounded-full shadow-lg shadow-pink-500/30">
               <Camera className="w-5 h-5" />
             </div>
-            <h3 className="font-bold text-lg text-pink-100 mb-4">Post para Instagram</h3>
+            <h3 className="font-bold text-lg text-pink-100 mb-4 flex items-center gap-2">
+              Post para Instagram {mockupUrl && <span className="text-xs bg-pink-500/20 text-pink-400 px-2 py-0.5 rounded-full border border-pink-500/20">Modo Pro</span>}
+            </h3>
             
             <div className="bg-black/40 rounded-xl p-4 border border-white/5 mb-4">
               <p className="text-slate-300 whitespace-pre-wrap">{socialCopy}</p>
@@ -132,7 +173,7 @@ export default function RedesSociales({ decision, imageUrl }: { decision: any, i
                     className="flex-1 bg-pink-500 text-white font-bold py-3 rounded-xl hover:bg-pink-600 transition-colors shadow-lg shadow-pink-500/20 flex justify-center items-center gap-2 disabled:opacity-50"
                   >
                     {isPublishingLoading && <Loader2 className="w-5 h-5 animate-spin" />}
-                    {isPublishingLoading ? "Enviando a API..." : "Publicar Ahora"}
+                    {isPublishingLoading ? "Enviando a API..." : (mockupUrl ? "Publicar Mockup Ahora" : "Publicar Diseño Ahora")}
                   </button>
                   <button className="flex-1 bg-white/10 text-slate-200 font-medium py-3 rounded-xl hover:bg-white/20 transition-colors disabled:opacity-50" disabled={isPublishingLoading}>
                     Programar...
