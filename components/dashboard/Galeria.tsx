@@ -110,7 +110,7 @@ export default function Galeria() {
                   <div className="flex items-center justify-between text-[10px] text-slate-500 mt-auto pt-3 border-t border-white/5">
                     <span className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
-                      {new Date(design.createdAt).toLocaleDateString()}
+                      {(typeof design.createdAt === 'object' && 'toDate' in design.createdAt ? design.createdAt.toDate() : new Date(design.createdAt)).toLocaleDateString()}
                     </span>
                     <span className="flex items-center gap-1 text-slate-400">
                       <Tag className="w-3 h-3" />
