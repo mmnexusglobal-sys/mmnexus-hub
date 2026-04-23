@@ -26,12 +26,11 @@ export default function Dashboard() {
   const [concept, setConcept] = useState("");
   const [reportText, setReportText] = useState("");
   const [isProcessingTrends, setIsProcessingTrends] = useState(false);
-  const [decision, setDecision] = useState<any>(null);
+  const [decision, setDecision] = useState<Record<string, unknown> | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [printifyStatus, setPrintifyStatus] = useState<{ connected: boolean; shopName?: string; loading: boolean }>({ connected: false, loading: true });
   const [activeTab, setActiveTab] = useState("Dashboard");
   const [pipelineExecuting, setPipelineExecuting] = useState(false);
-  const [pipelineResult, setPipelineResult] = useState<any>(null);
 
   useEffect(() => {
     fetch("/api/printify/shops")
@@ -57,7 +56,6 @@ export default function Dashboard() {
         body: JSON.stringify({ ...decision, imageUrl }),
       });
       const data = await res.json();
-      setPipelineResult(data);
       if (data.success) {
         alert("¡Pipeline Ejecutado! Producto creado en Printify.");
       } else {
@@ -145,7 +143,7 @@ export default function Dashboard() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-8 md:p-12 overflow-y-auto h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-900/20 via-slate-950 to-slate-950">
+      <main className="flex-1 p-8 md:p-12 overflow-y-auto h-screen bg-[radial-gradient(ellipse_at_top_right,var(--tw-gradient-stops))] from-indigo-900/20 via-slate-950 to-slate-950">
         
         {activeTab === "Generador IA" ? (
           <GeneradorIA decision={decision} imageUrl={imageUrl} setImageUrl={setImageUrl} />
@@ -164,7 +162,7 @@ export default function Dashboard() {
               </div>
               
               {/* Status Badge */}
-              <div className="flex items-center gap-4 bg-white/[0.02] border border-white/10 rounded-full px-4 py-2">
+              <div className="flex items-center gap-4 bg-white/2 border border-white/10 rounded-full px-4 py-2">
                 <div className="flex items-center gap-2">
                   <div className="relative flex h-3 w-3">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -194,7 +192,7 @@ export default function Dashboard() {
               <div className="xl:col-span-2 space-y-8">
                 
                 {/* Trend Ingestion Form */}
-                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-6 md:p-8 backdrop-blur-xl relative overflow-hidden group">
+                <div className="bg-white/2 border border-white/10 rounded-2xl p-6 md:p-8 backdrop-blur-xl relative overflow-hidden group">
                   <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-colors duration-500"></div>
                   
                   <h3 className="text-xl font-semibold mb-6 flex items-center gap-3">
@@ -222,7 +220,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Concept Input Section */}
-                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-6 md:p-8 backdrop-blur-xl relative overflow-hidden group">
+                <div className="bg-white/2 border border-white/10 rounded-2xl p-6 md:p-8 backdrop-blur-xl relative overflow-hidden group">
                   <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl group-hover:bg-indigo-500/20 transition-colors duration-500"></div>
                 
                 <h3 className="text-xl font-semibold mb-6 flex items-center gap-3">
@@ -308,7 +306,7 @@ export default function Dashboard() {
                 { step: "2. Shopify", desc: "Sync Inventario", active: false, icon: ShoppingBag },
                 { step: "3. Redes Sociales", desc: "Publicar Post", active: false, icon: Share2 }
               ].map((step, i) => (
-                <div key={i} className={`bg-white/[0.02] border border-white/10 rounded-xl p-5 ${step.active ? 'border-indigo-500/50 shadow-[0_0_15px_rgba(99,102,241,0.1)]' : ''}`}>
+                <div key={i} className={`bg-white/2 border border-white/10 rounded-xl p-5 ${step.active ? 'border-indigo-500/50 shadow-[0_0_15px_rgba(99,102,241,0.1)]' : ''}`}>
                   <step.icon className={`w-6 h-6 mb-3 ${step.active ? 'text-indigo-400' : 'text-slate-500'}`} />
                   <h4 className="font-semibold text-slate-200 mb-1">{step.step}</h4>
                   <p className="text-xs text-slate-400">{step.desc}</p>
