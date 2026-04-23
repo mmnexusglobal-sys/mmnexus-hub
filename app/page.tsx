@@ -59,7 +59,7 @@ export default function Dashboard() {
       const res = await fetch("/api/printify/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...decision, imageUrl }),
+        body: JSON.stringify({ decision, imageUrl }),
       });
       const data = await res.json();
       if (data.success) {

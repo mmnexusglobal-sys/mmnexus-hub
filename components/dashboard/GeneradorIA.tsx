@@ -19,7 +19,7 @@ export default function GeneradorIA({
 
   useEffect(() => {
     if (decision?.imagePrompt && decision.imagePrompt !== prompt) {
-      setPrompt(decision.imagePrompt);
+      setTimeout(() => setPrompt(decision.imagePrompt!), 0);
       // Auto-trigger image generation if we just got a new decision and haven't auto-triggered yet
       if (!imageUrl && !isGenerating && !autoTriggered.current) {
         autoTriggered.current = true;
@@ -36,7 +36,7 @@ export default function GeneradorIA({
   useEffect(() => {
     if (!decision) {
       autoTriggered.current = false;
-      setPrompt("");
+      setTimeout(() => setPrompt(""), 0);
     }
   }, [decision]);
 

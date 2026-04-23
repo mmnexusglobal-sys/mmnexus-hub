@@ -20,19 +20,18 @@ const getDailyTrends = () => {
 
 const SYSTEM_PROMPT = `
 Eres el "Nexus Trend-Finder", un agente experto en ecommerce, print on demand y marketing viral.
-Eres el Agente "Nexus Trend-Finder". Tu objetivo es el mercado de EE. UU. (US Market). 
+Tu objetivo es el mercado de EE. UU. (US Market). 
 IMPORTANTE: Aunque el usuario te hable en español, TUS RESPUESTAS PARA shopifyTitle, socialCopy y seoTags DEBEN ESTAR EXCLUSIVAMENTE EN INGLÉS.
           
-Analiza el concepto del usuario y elige el MEJOR blueprint de Printify de esta lista:
-T_SHIRT (12): Generic, pop art, funny messages.
-HOODIE (77): Heavy, streetwear, cyberpunk, urban minimalist.
-TOTE_BAG (305): Botanical, eco-friendly, indie.
-MUG (62): Office humor, motivational, pets.
-POSTER (194): Complex art, landscapes, vintage, cinematic.
+Analiza el concepto del usuario y elige el MEJOR tipo de producto de esta lista:
+T_SHIRT: Generic, pop art, funny messages.
+HOODIE: Heavy, streetwear, cyberpunk, urban minimalist.
+TOTE_BAG: Botanical, eco-friendly, indie.
+MUG: Office humor, motivational, pets.
+POSTER: Complex art, landscapes, vintage, cinematic.
 
 Tu respuesta DEBE ser ÚNICAMENTE un JSON válido con esta estructura exacta (sin markdown, sin bloques de código, solo JSON crudo):
 {
-  "blueprintId": 12,
   "productType": "T_SHIRT",
   "reason": "Explicación breve en español de por qué elegiste este producto",
   "shopifyTitle": "Title in English for the US Market",
@@ -80,9 +79,9 @@ export async function POST(request: Request) {
 
     let cleanJson = responseText;
     
-    // Si la IA envolvió toda su respuesta en llaves por error (ej. { Role: ... "blueprintId": 12 }), 
+    // Si la IA envolvió toda su respuesta en llaves por error (ej. { Role: ... "productType": "T_SHIRT" }), 
     // fallará el JSON.parse. Vamos a intentar extraer la parte que parece JSON real.
-    const blueprintMatch = responseText.match(/\{[\s\S]*"blueprintId"[\s\S]*\}/);
+    const blueprintMatch = responseText.match(/\{[\s\S]*"productType"[\s\S]*\}/);
     if (blueprintMatch) {
       cleanJson = blueprintMatch[0];
     }
@@ -90,9 +89,9 @@ export async function POST(request: Request) {
     // Limpiar markdown residual
     cleanJson = cleanJson.replace(/```json/gi, "").replace(/```/gi, "").trim();
 
-    // Fix común: Si el texto empieza con { pero tiene texto plano antes del "blueprintId", 
-    // intentamos buscar el primer "{" justo antes de "blueprintId"
-    if (cleanJson.startsWith('{') && !cleanJson.includes('"blueprintId":')) {
+    // Fix común: Si el texto empieza con { pero tiene texto plano antes del "productType", 
+    // intentamos buscar el primer "{" justo antes de "productType"
+    if (cleanJson.startsWith('{') && !cleanJson.includes('"productType":')) {
          // Fallback
     }
     

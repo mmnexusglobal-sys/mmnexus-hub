@@ -8,16 +8,16 @@ export default function Galeria() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadDesigns();
-  }, []);
-
-  const loadDesigns = async () => {
+  async function loadDesigns() {
     setLoading(true);
     const data = await getSavedDesigns();
     setDesigns(data);
     setLoading(false);
-  };
+  }
+
+  useEffect(() => {
+    loadDesigns();
+  }, []);
 
   const handleDelete = async (id: string | undefined) => {
     if (!id) return;
@@ -76,8 +76,9 @@ export default function Galeria() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredDesigns.map((design) => (
-              <div key={design.id} className="bg-white/[0.02] border border-white/10 rounded-2xl overflow-hidden hover:border-emerald-500/30 hover:shadow-[0_0_20px_rgba(16,185,129,0.1)] transition-all group flex flex-col">
+              <div key={design.id} className="bg-white/2 border border-white/10 rounded-2xl overflow-hidden hover:border-emerald-500/30 hover:shadow-[0_0_20px_rgba(16,185,129,0.1)] transition-all group flex flex-col">
                 <div className="relative aspect-square overflow-hidden bg-black/40">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img 
                     src={design.imageUrl} 
                     alt={design.shopifyTitle} 
@@ -103,7 +104,7 @@ export default function Galeria() {
                     {design.shopifyTitle || "Sin título"}
                   </h3>
                   <p className="text-xs text-slate-400 line-clamp-2 mb-4 flex-1 italic">
-                    "{design.concept}"
+                    &quot;{design.concept}&quot;
                   </p>
                   
                   <div className="flex items-center justify-between text-[10px] text-slate-500 mt-auto pt-3 border-t border-white/5">

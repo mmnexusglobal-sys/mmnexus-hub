@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Share2, Camera, Music2, MapPin, Hash, CheckCircle2, Loader2, Video } from "lucide-react";
+import { Share2, Camera, Music2, CheckCircle2, Loader2, Video } from "lucide-react";
 
 import { DecisionData } from "@/lib/validations";
 
@@ -14,6 +14,7 @@ export default function RedesSociales({ decision, imageUrl }: { decision: Partia
   const [mockupUrl, setMockupUrl] = useState<string | null>(null);
 
   const handlePublishIG = async () => {
+    if (!decision) return;
     setIsPublishingLoading(true);
     try {
       const tags = decision.seoTags || ["streetwear", "design", "art"];
@@ -67,6 +68,7 @@ export default function RedesSociales({ decision, imageUrl }: { decision: Partia
   }
 
   const handleGenerateVideo = async () => {
+    if (!decision) return;
     setIsGeneratingVideo(true);
     try {
       const res = await fetch("/api/ai/video", {
@@ -198,7 +200,7 @@ export default function RedesSociales({ decision, imageUrl }: { decision: Partia
                 <div className="bg-black/40 rounded-xl p-4 border border-white/5 space-y-3 mb-4">
                   <p className="text-sm text-slate-400"><span className="text-cyan-400 font-bold">Hook (0-3s):</span> {decision.socialCopy ? `Muestra la imagen tapada y di "${decision.socialCopy.split('.')[0]}..."` : 'Muestra la imagen tapada y di "No vas a creer el diseño que acabo de crear..."'}</p>
                   <p className="text-sm text-slate-400"><span className="text-cyan-400 font-bold">Body (3-10s):</span> Revela el diseño al ritmo del beat de tendencia actual.</p>
-                  <p className="text-sm text-slate-400"><span className="text-cyan-400 font-bold">CTA (10-15s):</span> "Link in bio to get yours before it sells out!"</p>
+                  <p className="text-sm text-slate-400"><span className="text-cyan-400 font-bold">CTA (10-15s):</span> &quot;Link in bio to get yours before it sells out!&quot;</p>
                 </div>
                 
                 <button 
