@@ -12,7 +12,7 @@ export async function POST(request: Request) {
     const parsedData = RequestSchema.safeParse(body);
 
     if (!parsedData.success) {
-      return NextResponse.json({ error: "Prompt inválido", details: parsedData.error.errors }, { status: 400 });
+      return NextResponse.json({ error: "Prompt inválido", details: parsedData.error.format() }, { status: 400 });
     }
 
     const { prompt } = parsedData.data;
@@ -93,8 +93,9 @@ export async function POST(request: Request) {
       throw new Error("La API no devolvió ninguna imagen.");
     }
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error en generación de imagen:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const msg = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

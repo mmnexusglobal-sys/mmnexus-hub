@@ -86,8 +86,9 @@ export default function CargaMasiva() {
         });
 
         setResults(prev => [...prev, { concept, status: "success", message: "Publicado en Printify y Guardado" }]);
-      } catch (error: any) {
-        setResults(prev => [...prev, { concept, status: "error", message: error.message }]);
+      } catch (error: unknown) {
+        const msg = error instanceof Error ? error.message : String(error);
+        setResults(prev => [...prev, { concept, status: "error", message: msg }]);
       }
     }
 
@@ -107,7 +108,7 @@ export default function CargaMasiva() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Input Form */}
-        <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-6 relative overflow-hidden">
+        <div className="bg-white/2 border border-white/10 rounded-2xl p-6 relative overflow-hidden">
           <div className="absolute top-0 right-0 -mr-8 -mt-8 w-40 h-40 bg-pink-500/10 rounded-full blur-3xl"></div>
           
           <label className="text-sm font-medium text-slate-300 mb-3 block">Lista de Conceptos / Nichos</label>
@@ -134,7 +135,7 @@ export default function CargaMasiva() {
           <h3 className="font-semibold text-slate-200 mb-6 border-b border-white/10 pb-4">Progreso del Lote</h3>
           
           {isProcessing || progress.total > 0 ? (
-            <div className="mb-6 bg-white/[0.02] p-4 rounded-xl border border-white/5">
+            <div className="mb-6 bg-white/2 p-4 rounded-xl border border-white/5">
               <div className="flex justify-between text-sm mb-2">
                 <span className="text-slate-400">Generando: <span className="text-pink-400 font-medium">{progress.currentConcept}</span></span>
                 <span className="text-slate-300 font-bold">{progress.current} / {progress.total}</span>

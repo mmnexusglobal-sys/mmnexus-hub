@@ -21,7 +21,12 @@ const SidebarItem = ({ icon, label, active, onClick }: { icon: React.ReactNode, 
   </button>
 );
 
-import { DecisionData } from "@/lib/validations";
+import { DecisionData as BaseDecisionData } from "@/lib/validations";
+
+type DecisionData = Partial<BaseDecisionData> & {
+  error?: string;
+  rawOutput?: string;
+};
 
 export default function Dashboard() {
   const [isGenerating, setIsGenerating] = useState(false);

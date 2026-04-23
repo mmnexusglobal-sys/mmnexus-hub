@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     const parsedData = RequestSchema.safeParse(body);
 
     if (!parsedData.success) {
-      return NextResponse.json({ error: "Datos de producto inválidos", details: parsedData.error.errors }, { status: 400 });
+      return NextResponse.json({ error: "Datos de producto inválidos", details: parsedData.error.format() }, { status: 400 });
     }
 
     const data = parsedData.data;
@@ -121,10 +121,11 @@ export async function POST(request: Request) {
       }
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("❌ Error en Printify Pipeline:", error);
+    const msg = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
-      { error: "Error conectando con Printify: " + error.message },
+      { error: "Error conectando con Printify: " + msg },
       { status: 500 }
     );
   }

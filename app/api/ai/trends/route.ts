@@ -44,13 +44,13 @@ const RequestSchema = z.object({
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const parsedData = RequestSchema.safeParse(body);
+    const parsedRequest = RequestSchema.safeParse(body);
 
-    if (!parsedData.success) {
-      return NextResponse.json({ error: "Datos de entrada inválidos", details: parsedData.error.errors }, { status: 400 });
+    if (!parsedRequest.success) {
+      return NextResponse.json({ error: "Datos de entrada inválidos", details: parsedRequest.error.format() }, { status: 400 });
     }
 
-    const { reportText } = parsedData.data;
+    const { reportText } = parsedRequest.data;
 
     const model = getGemmaModel("gemini-1.5-flash");
     const prompt = `${SYSTEM_PROMPT}\n\nReporte a analizar:\n"${reportText}"`;
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     try {
       const result = await model.generateContent(prompt);
       responseText = result.response.text();
-    } catch (apiError: any) {
+    } catch (apiError: unknown) {
       console.warn("Fallo con gemini-1.5-flash. Intentando fallback (gemini-2.5-flash)...");
       const fallbackModel = getGemmaModel("gemini-2.5-flash");
       const fallbackResult = await fallbackModel.generateContent(prompt);
@@ -67,10 +67,10 @@ export async function POST(request: Request) {
     }
     
     // Limpiar markdown residual
-    let cleanJson = responseText.replace(/```json/gi, "").replace(/```/gi, "").trim();
+    const cleanJson = responseText.replace(/```json/gi, "").replace(/```/gi, "").trim();
     
     // Validar JSON
-    const parsedData = JSON.parse(cleanJson);
+    const parsedTrends = JSON.parse(cleanJson);
     
     // Guardar en data/daily_trends.json
     const trendsPath = path.join(process.cwd(), "data", "daily_trends.json");
@@ -81,12 +81,13 @@ export async function POST(request: Request) {
       fs.mkdirSync(dataDir, { recursive: true });
     }
     
-    fs.writeFileSync(trendsPath, JSON.stringify(parsedData, null, 2), "utf8");
+    fs.writeFileSync(trendsPath, JSON.stringify(parsedTrends, null, 2), "utf8");
     
-    return NextResponse.json({ success: true, message: "Trends updated successfully", data: parsedData });
+    return NextResponse.json({ success: true, message: "Trends updated successfully", data: parsedTrends });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("AI Trends Extractor Error:", error);
-    return NextResponse.json({ error: "Failed to process trends report: " + error.message, rawOutput: error.rawOutput || "" }, { status: 500 });
+    const msg = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: "Failed to process trends report: " + msg }, { status: 500 });
   }
 }

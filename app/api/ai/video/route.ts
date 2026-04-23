@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     const parsedData = RequestSchema.safeParse(body);
 
     if (!parsedData.success) {
-      return NextResponse.json({ error: "Datos de entrada inválidos", details: parsedData.error.errors }, { status: 400 });
+      return NextResponse.json({ error: "Datos de entrada inválidos", details: parsedData.error.format() }, { status: 400 });
     }
 
     const { imageUrl, socialCopy } = parsedData.data;
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
       message: "Video renderizado exitosamente para TikTok/Reels."
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error generando video:", error);
     return NextResponse.json({ error: "Fallo en renderizado de video." }, { status: 500 });
   }
