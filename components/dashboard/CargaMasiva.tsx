@@ -55,7 +55,26 @@ export default function CargaMasiva() {
           throw new Error("QA-Guardian Rechazado: El diseño no cumple con los 300 DPI o no tiene fondo transparente.");
         }
 
-        // 05. Autobot-Commander (Guardado y Orquestación)
+        // 05. Autobot-Commander (Subida a Printify)
+        setProgress(prev => ({ ...prev, currentConcept: `[05. Autobot] Creando producto en Printify...` }));
+        const printifyRes = await fetch("/api/printify/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+             imageUrl: imageData.imageUrl,
+             title: decisionData.shopifyTitle || concept,
+             description: decisionData.socialCopy || "Diseño exclusivo de M&M Nexus",
+             tags: decisionData.seoTags || ["mmnexus"]
+          })
+        });
+
+        if (!printifyRes.ok) {
+           const errData = await printifyRes.json().catch(() => ({}));
+           // Si falla la API de Printify, el Autobot-Commander aborta este diseño
+           throw new Error(`Fallo de Printify: ${errData.error || printifyRes.statusText}`);
+        }
+
+        // 05. Autobot-Commander (Guardado Local)
         setProgress(prev => ({ ...prev, currentConcept: `[05. Autobot] Persistiendo en Base de Datos...` }));
         await saveDesign({
           concept: concept,
@@ -66,7 +85,7 @@ export default function CargaMasiva() {
           productType: decisionData.productType || "",
         });
 
-        setResults(prev => [...prev, { concept, status: "success", message: "Aprobado por QA y Guardado" }]);
+        setResults(prev => [...prev, { concept, status: "success", message: "Publicado en Printify y Guardado" }]);
       } catch (error: any) {
         setResults(prev => [...prev, { concept, status: "error", message: error.message }]);
       }
