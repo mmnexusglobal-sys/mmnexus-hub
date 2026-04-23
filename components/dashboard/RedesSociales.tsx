@@ -14,17 +14,13 @@ export default function RedesSociales({ decision, imageUrl }: { decision: any, i
   const handlePublishIG = async () => {
     setIsPublishingLoading(true);
     try {
-      const webhookUrl = process.env.NEXT_PUBLIC_MAKE_WEBHOOK_URL;
-      if (!webhookUrl) throw new Error("Webhook URL no configurado en envs");
-      
       const tags = decision.seoTags || ["streetwear", "design", "art"];
       const formattedTags = tags.map((t: string) => `#${t.replace(/\s+/g, '')}`).join(" ");
       const finalCopy = `${decision.socialCopy}\n\n${formattedTags}`;
       
-      // Enviamos el mockup profesional si existe, de lo contrario la imagen cruda
       const finalImageUrl = mockupUrl || imageUrl;
 
-      const res = await fetch(webhookUrl, {
+      const res = await fetch("/api/social/publish", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

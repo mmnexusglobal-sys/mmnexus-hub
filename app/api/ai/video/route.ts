@@ -1,13 +1,23 @@
 import { NextResponse } from "next/server";
 
+import { z } from "zod";
+
+const RequestSchema = z.object({
+  imageUrl: z.string().url("Se requiere una URL de imagen válida"),
+  socialCopy: z.string().optional(),
+});
+
 // Simulación de la API de Creatomate o Bannerbear
 export async function POST(request: Request) {
   try {
-    const { imageUrl, socialCopy } = await request.json();
+    const body = await request.json();
+    const parsedData = RequestSchema.safeParse(body);
 
-    if (!imageUrl) {
-      return NextResponse.json({ error: "Falta la imagen base." }, { status: 400 });
+    if (!parsedData.success) {
+      return NextResponse.json({ error: "Datos de entrada inválidos", details: parsedData.error.errors }, { status: 400 });
     }
+
+    const { imageUrl, socialCopy } = parsedData.data;
 
     console.log("Iniciando renderizado de video en Creatomate...");
     console.log("Asset Base:", imageUrl.substring(0, 50) + "...");

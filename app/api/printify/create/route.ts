@@ -1,22 +1,34 @@
 import { NextResponse } from "next/server";
 
+import { z } from "zod";
+
+const RequestSchema = z.object({
+  imageUrl: z.string().min(1, "Se requiere una imagen en formato base64"),
+  shopifyTitle: z.string().optional(),
+  socialCopy: z.string().optional(),
+  seoTags: z.array(z.string()).optional(),
+});
+
 const PRINTIFY_TOKEN = process.env.PRINTIFY_API_TOKEN;
 const SHOP_ID = process.env.PRINTIFY_SHOP_ID;
 
 export async function POST(request: Request) {
   try {
-    const data = await request.json();
-    console.log("📥 Iniciando Pipeline de Printify con datos:", data);
+    const body = await request.json();
+    const parsedData = RequestSchema.safeParse(body);
+
+    if (!parsedData.success) {
+      return NextResponse.json({ error: "Datos de producto inválidos", details: parsedData.error.errors }, { status: 400 });
+    }
+
+    const data = parsedData.data;
+    console.log("📥 Iniciando Pipeline de Printify con validación Zod pasada");
 
     if (!PRINTIFY_TOKEN || !SHOP_ID) {
       return NextResponse.json(
         { error: "Credenciales de Printify no configuradas en el entorno." },
         { status: 500 }
       );
-    }
-
-    if (!data.imageUrl) {
-      throw new Error("No se proporcionó imageUrl para el producto.");
     }
 
     // 1. Extraer el Base64 limpio de la imagen

@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getGemmaModel } from "@/lib/gemma";
 import fs from "fs";
 import path from "path";
@@ -35,13 +35,22 @@ Estructura esperada:
 }
 `;
 
+import { z } from "zod";
+
+const RequestSchema = z.object({
+  reportText: z.string().min(1, "El texto del reporte no puede estar vacío"),
+});
+
 export async function POST(request: Request) {
   try {
-    const { reportText } = await request.json();
+    const body = await request.json();
+    const parsedData = RequestSchema.safeParse(body);
 
-    if (!reportText) {
-      return NextResponse.json({ error: "No reportText provided" }, { status: 400 });
+    if (!parsedData.success) {
+      return NextResponse.json({ error: "Datos de entrada inválidos", details: parsedData.error.errors }, { status: 400 });
     }
+
+    const { reportText } = parsedData.data;
 
     const model = getGemmaModel("gemini-1.5-flash");
     const prompt = `${SYSTEM_PROMPT}\n\nReporte a analizar:\n"${reportText}"`;

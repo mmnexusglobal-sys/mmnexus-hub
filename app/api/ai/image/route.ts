@@ -1,12 +1,21 @@
 import { NextResponse } from "next/server";
 
+import { z } from "zod";
+
+const RequestSchema = z.object({
+  prompt: z.string().min(1, "El prompt de la imagen es requerido"),
+});
+
 export async function POST(request: Request) {
   try {
-    const { prompt } = await request.json();
+    const body = await request.json();
+    const parsedData = RequestSchema.safeParse(body);
 
-    if (!prompt) {
-      return NextResponse.json({ error: "El prompt es requerido" }, { status: 400 });
+    if (!parsedData.success) {
+      return NextResponse.json({ error: "Prompt inválido", details: parsedData.error.errors }, { status: 400 });
     }
+
+    const { prompt } = parsedData.data;
 
     const apiKey = process.env.GOOGLE_AI_API_KEY;
     if (!apiKey) {

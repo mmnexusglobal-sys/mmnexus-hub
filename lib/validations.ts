@@ -29,6 +29,15 @@ export const DesignAssetSchema = z.object({
 
 export type DesignAssetData = z.infer<typeof DesignAssetSchema>;
 
+export const PublishRequestSchema = z.object({
+  imageUrl: z.string().url("imageUrl must be a valid URL"),
+  socialCopy: z.string().min(1, "socialCopy is required"),
+  productType: z.string().min(1, "productType is required"),
+  platform: z.enum(["Instagram", "TikTok", "Pinterest", "Shopify", "Printify"]),
+});
+
+export type PublishRequestData = z.infer<typeof PublishRequestSchema>;
+
 export const PublishResultSchema = z.object({
   platform: z.enum(["Instagram", "TikTok", "Pinterest", "Shopify", "Printify"]),
   success: z.boolean(),
