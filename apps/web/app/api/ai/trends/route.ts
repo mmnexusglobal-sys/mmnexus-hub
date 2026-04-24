@@ -2,10 +2,12 @@ import { NextResponse } from "next/server";
 import { getGemmaModel } from "@/lib/gemma";
 import fs from "fs";
 import path from "path";
+import { z } from "zod";
+import { FullTrendReportSchema } from "@/lib/validations";
 
 const SYSTEM_PROMPT = `
 Eres un analista de datos experto. Tu tarea es extraer la información clave de un reporte de tendencias de mercado (texto sin formato) y convertirlo ESTRICTAMENTE en un objeto JSON con la siguiente estructura.
-NO incluyas markdown, saludos, ni bloques de código. SOLO el JSON válido.
+NO incluyas markdown, saludos, ni bloques de código. SOLO el JSON válido en UTF-8.
 
 Estructura esperada:
 {
@@ -35,14 +37,13 @@ Estructura esperada:
 }
 `;
 
-import { z } from "zod";
-
 const RequestSchema = z.object({
   reportText: z.string().min(1, "El texto del reporte no puede estar vacío"),
 });
 
 export async function POST(request: Request) {
   try {
+    // Ensure we parse the body handling standard utf-8 encoding
     const body = await request.json();
     const parsedRequest = RequestSchema.safeParse(body);
 
@@ -69,19 +70,32 @@ export async function POST(request: Request) {
     // Limpiar markdown residual
     const cleanJson = responseText.replace(/```json/gi, "").replace(/```/gi, "").trim();
     
-    // Validar JSON
-    const parsedTrends = JSON.parse(cleanJson);
+    // Validar JSON estructuralmente con Zod
+    let parsedTrends;
+    try {
+      const rawJson = JSON.parse(cleanJson);
+      const validationResult = FullTrendReportSchema.safeParse(rawJson);
+      
+      if (!validationResult.success) {
+        console.error("Validation failed:", validationResult.error);
+        return NextResponse.json({ 
+          error: "Gemini devolvió un formato incorrecto", 
+          details: validationResult.error.format() 
+        }, { status: 502 });
+      }
+      parsedTrends = validationResult.data;
+    } catch (e) {
+      return NextResponse.json({ error: "Gemini no devolvió un JSON válido" }, { status: 502 });
+    }
     
-    // Guardar en data/daily_trends.json
+    // Guardar en data/daily_trends.json con explícito UTF-8
     const trendsPath = path.join(process.cwd(), "data", "daily_trends.json");
-    
-    // Crear el directorio si no existe
     const dataDir = path.dirname(trendsPath);
     if (!fs.existsSync(dataDir)) {
       fs.mkdirSync(dataDir, { recursive: true });
     }
     
-    fs.writeFileSync(trendsPath, JSON.stringify(parsedTrends, null, 2), "utf8");
+    fs.writeFileSync(trendsPath, JSON.stringify(parsedTrends, null, 2), { encoding: "utf8" });
     
     return NextResponse.json({ success: true, message: "Trends updated successfully", data: parsedTrends });
 

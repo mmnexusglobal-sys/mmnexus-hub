@@ -2,9 +2,22 @@
 
 import { useState } from 'react';
 
+type PipelineResult = {
+  trend: {
+    topNiches: string[];
+  };
+  brief: {
+    conceptName: string;
+  };
+  instagramPost: {
+    caption: string;
+    hashtags: string[];
+  };
+};
+
 export function GenerationForm() {
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<PipelineResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const runPipeline = async () => {
@@ -33,8 +46,8 @@ export function GenerationForm() {
       } else {
         setError(data.error || 'Error desconocido');
       }
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : String(err));
     } finally {
       setLoading(false);
     }
@@ -52,7 +65,7 @@ export function GenerationForm() {
         onClick={runPipeline}
         disabled={loading}
         className={`w-full py-3 px-4 rounded font-bold text-white transition-all ${
-          loading ? 'bg-gray-600 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:scale-105'
+          loading ? 'bg-gray-600 cursor-not-allowed' : 'bg-linear-to-r from-blue-600 to-purple-600 hover:scale-105'
         }`}
       >
         {loading ? 'Ejecutando Agentes...' : 'Iniciar Creación Mágica ✨'}

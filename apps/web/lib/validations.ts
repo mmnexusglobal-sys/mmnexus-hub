@@ -12,6 +12,32 @@ export const DecisionSchema = z.object({
 
 export type DecisionData = z.infer<typeof DecisionSchema>;
 
+export const NicheSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  idealDesigns: z.array(z.string()),
+  recommendedProducts: z.array(z.string()),
+  emergingSubNiche: z.string().optional(),
+});
+
+export const ViralTrendSchema = z.object({
+  concept: z.string(),
+  description: z.string(),
+});
+
+export const FullTrendReportSchema = z.object({
+  date: z.string(),
+  niches: z.array(NicheSchema),
+  viralTrends: z.array(ViralTrendSchema).optional(),
+  socialSignals: z.object({
+    opportunity: z.string().optional(),
+    signals: z.array(z.string()).optional()
+  }).optional(),
+  highConversionKeywords: z.array(z.string()).optional(),
+});
+
+export type FullTrendReportData = z.infer<typeof FullTrendReportSchema>;
+
 export const TrendReportSchema = z.object({
   topic: z.string(),
   score: z.number().min(0).max(100),

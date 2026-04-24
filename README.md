@@ -1,194 +1,265 @@
 # 🧠 M&M Nexus Hub
 
-**Ecosistema multi-agente de IA para creación de contenido con identidad de marca, automatización de tiendas POD (Printify + Shopify) y publicación en redes sociales, orientado al mercado de Estados Unidos.**
+**Ecosistema multi-agente de IA modular: Print-on-Demand físico y Negocios Digitales, unificados por un núcleo común de marca y automatización.**
 
 [![Next.js](https://img.shields.io/badge/Next.js-15.1.7-black?logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Turborepo](https://img.shields.io/badge/Turborepo-monorepo-red?logo=turborepo)](https://turbo.build/)
+[![Firebase](https://img.shields.io/badge/Firebase-Firestore-orange?logo=firebase)](https://firebase.google.com/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
-**M&M Nexus Hub** ya no es solo un pipeline. Es un **ejército de agentes de IA ultra especializados** que trabajan en paralelo para dominar cada plataforma de venta y cada red social con un estilo de marca único y reconocible.
+**M&M Nexus Hub** es un monorepo que alberga el ecosistema completo de automatización de negocios online para el mercado de EE.UU.  
+No es una sola aplicación, sino un **núcleo común** que da soporte a dos grandes módulos independientes:
 
-Cada red social tiene su propio agente creativo, su propio copywriter y su propio publicador. Cada ecommerce tiene su propio detective de tendencias. Y todos están supervisados por un **Brand Guardian** que garantiza coherencia visual y de tono en cada publicación.
+- **Módulo POD**: automatización de tiendas Print-on-Demand (camisetas, tazas, etc.) con publicación en redes sociales.
+- **Módulo Digital**: expansión a libros (KDP), afiliados (Hotmart) y contenido (blog + AdSense).
 
----
-
-## 🚀 La diferencia: agentes individuales, marca consistente
-
-- **Agentes por red social**: No es un copy genérico para todos. Instagram, TikTok, Pinterest y Facebook reciben formatos, copys y _hashtags_ diseñados por un especialista nativo de cada plataforma.
-- **Diseños con personalidad**: El módulo de diseño no solo genera imágenes; añade **frases, texturas, estilos personalizables** y compone postales completas que transmiten el ADN de la marca.
-- **Detectives de nicho por plataforma**: Un agente experto en Etsy no busca tendencias en Amazon, y viceversa. Cada uno conoce las reglas del juego de su marketplace.
-- **Guardian de Marca**: Un agente central que revisa cada _post_ y cada diseño para que todos mantengan el mismo universo visual y verbal.
+Ambos módulos comparten el mismo motor de agentes, el mismo perfil de marca y la misma interfaz de control, pero se desarrollan, prueban y escalan como unidades lógicas diferenciadas.
 
 ---
 
-## 🏗️ Arquitectura del ecosistema de agentes
+## 🧱 Estructura del Monorepo
 
-El sistema se organiza en **cuatro grandes familias de agentes**:
+```text
+mmnexus-hub/
+├── apps/
+│   └── web/          # Dashboard y API unificada (Next.js)
+├── packages/
+│   ├── core/         # Núcleo común (agentes base, orquestación, marca, UI)
+│   ├── pod/          # Módulo Print-on-Demand y redes sociales
+│   └── digital/      # Módulo Negocios Digitales (KDP, Hotmart, blog)
+├── docs/             # Documentación técnica
+└── package.json      # Workspaces
+```
 
-### 🔍 1. Agentes de Inteligencia de Mercado (Trend-Finders por ecommerce)
-Cada uno monitorea tendencias en su propia plataforma y entrega un informe estructurado con nichos de alto potencial, productos virales y palabras clave.
+Cada paquete (`core`, `pod`, `digital`) es una unidad independiente con sus propias reglas de negocio, pero hereda del núcleo común para evitar duplicar código y mantener la coherencia de marca.
 
-| Agente | Plataforma | Especialidad |
-|--------|------------|--------------|
-| **Amazon Scout** | Amazon Merch / KDP | Detecta libros, camisetas y productos más vendidos, analiza reseñas. |
-| **Etsy Eye** | Etsy | Busca tags en tendencia, estilos artesanales y personalización. |
-| **eBay Pulse** | eBay | Encuentra subastas calientes y productos con alta rotación. |
-| **Shopify Radar** | Tiendas Shopify webs | Rastrea tiendas de éxito y tendencias en dropshipping. |
-
-### 🎨 2. Agentes Creativos (Diseño + Toque Diferencial)
-Estos agentes **no generan imágenes aisladas**. Construyen piezas completas con frases, identidad visual y la capacidad de ser personalizadas manualmente.
-
-*   **Creative Director (orquestador)**: Recibe la tendencia, decide el concepto, la frase y los parámetros visuales.
-*   **Design Maker**: Genera la imagen base con IA, pero además superpone tipografías, aplica filtros de marca y exporta en los formatos requeridos por cada red social.
-*   **Customization Engine**: Permite al usuario guardar estilos, frases recurrentes y paletas de colores para mantener la coherencia a lo largo del tiempo.
-*   **Brand Guardian**: Antes de publicar, este agente evalúa que el diseño y el copy respeten el manual de marca: paleta de colores, tono de voz, tipografía, espacio para logotipos, etc.
-
-### ✍️ 3. Agentes de Formato y Copy por Red Social
-Una vez aprobado el diseño, **cada red social recibe su propio tratamiento**:
-
-| Agente | Red Social | Tareas específicas |
-|--------|------------|-------------------|
-| **Instagram Guru** | Instagram | Crea carruseles, reels y stories. Copy con hashtags, formato cuadrado/vertical. |
-| **TikTok Tactician** | TikTok | Adapta el diseño a formato 9:16, propone textos de gancho, efectos y sonidos de tendencia. |
-| **Pinterest Curator** | Pinterest | Genera pines alargados, descripciones con palabras clave long-tail y llamadas a la acción para clics. |
-| **Facebook Wingman** | Facebook | Redacta posts más conversacionales, aptos para grupos y anuncios. |
-| **Technical Formatter** | General | Prepara los tamaños de archivo, resolución y metadatos exactos para cada plataforma. |
-
-### 🚀 4. Agentes de Publicación e Integración
-Una vez que el contenido está validado y formateado, los **Publisher Agents** lo suben automáticamente o lo dejan programado.
-
-*   **Social Publisher**: Publica en cada red a través de Make.com con la programación óptima.
-*   **Printify Manager**: Sube el diseño a Printify, crea el producto y lo vincula a la tienda Shopify correspondiente (futuro: Amazon Merch, Etsy, eBay).
-*   **Daily Reporter**: Genera un resumen por correo/slack con todo lo publicado y los resultados preliminares.
-
-### Flujo de trabajo simplificado
-[Agentes de Inteligencia por ecommerce]
-↓
-[Creative Director + Design Maker + Customization Engine]
-↓
-[Brand Guardian – Aprobación]
-↓
-[Agentes de Copy y Formato por red social]
-↓
-[Publicadores automáticos]
+> **Regla de oro**: nunca importes código de `pod` en `digital` ni viceversa. Toda comunicación entre módulos ocurre exclusivamente a través del `EventBus` de `@mmnexus/core`.
 
 ---
 
-## 🛒 Integraciones actuales y planificadas
+## 🔍 ¿Qué contiene cada módulo?
 
-| Plataforma | Tipo | Estado |
-|------------|------|--------|
-| **Printify** | POD | ✅ Funcional (creación de productos) |
-| **Shopify** | Tienda | 🔜 Conexión Printify-Shopify en progreso |
-| **Make.com** | Automatización | ✅ Publicación de redes vía webhook |
-| **Amazon Merch** | POD | 📅 Agente Amazon Scout y publicador futuro |
-| **Amazon KDP** | Libros | 📅 Planificado en fase de contenidos |
-| **Etsy** | Handmade/POD | 📅 Agente Etsy Eye + integración API |
-| **eBay** | Subastas | 📅 Agente eBay Pulse + API |
-| **Hotmart** | Afiliados | 📅 Módulo de embudos y landing pages |
+### 🧠 `@mmnexus/core` – El Núcleo
+
+- **Clases base para agentes**: `BaseAgent`, `AgentOrchestrator`, `EventBus`.
+- **Gestor de marca**: `BrandProfile` (colores, tipografías, frases predilectas).
+- **Integraciones abstractas**: cliente genérico para APIs externas.
+- **Componentes UI compartidos**: Dashboard, formularios, galería, panel de marca.
+- **Utilidades**: logging, validadores, helpers de formato.
+
+Todo agente, ya sea de POD o Digital, extiende de `BaseAgent` y se beneficia de la misma gestión de errores, reintentos y comunicación entre módulos.
+
+---
+
+### 🛒 `@mmnexus/pod` – Ecosistema Print-on-Demand
+
+Agentes especializados en detectar tendencias, crear diseños, publicar en redes y gestionar Printify + Shopify.
+
+- **Trend-Finders por plataforma**: `AmazonScout`, `EtsyEye`, `eBayPulse`, `ShopifyRadar`.
+- **Creativos**: `CreativeDirector`, `DesignMaker` (imágenes + frases), `CustomizationEngine`.
+- **BrandGuardian**: vela por la coherencia visual y de tono antes de cualquier publicación.
+- **Social Media Agents por red**: `InstagramGuru`, `TikTokTactician`, `PinterestCurator`, `FacebookWingman`.
+- **Publishers**: `PrintifyManager` (crea productos en Printify y conecta Shopify), `SocialPublisher` (Make.com).
+
+**Flujo de trabajo del módulo POD:**
+
+```text
+Trend-Finder → CreativeDirector → DesignMaker + CustomizationEngine
+    → BrandGuardian → Agentes de Red Social (formato + copy)
+    → SocialPublisher → Analytics → AgentFinanciero (actualiza meta PC)
+```
+
+> El ciclo se cierra: cada publicación alimenta al `AgentFinanciero` con datos de engagement y ventas, que a su vez actualiza el progreso hacia la meta de infraestructura (PC Workstation).
+
+---
+
+### 📚 `@mmnexus/digital` – Ecosistema Digital *(en desarrollo)*
+
+Hereda del núcleo y contendrá agentes para:
+
+- **Amazon KDP**: creación y publicación de libros electrónicos e impresos.
+- **Blog con AdSense**: generación de contenido optimizado para SEO y monetización (disponible en Uruguay sin restricciones).
+- **Hotmart**: gestión de productos propios y campañas de afiliados.
+- **Landing Pages y Embudos**: automatización de páginas de venta.
+
+Actualmente este módulo es un cascarón preparado para crecer cuando el módulo POD esté maduro y generando ingresos. Los agentes del módulo POD pueden emitir eventos de tendencia al bus que el módulo Digital consumirá para generar contenido alineado.
+
+---
+
+## 🛒 Integraciones actuales y futuras
+
+| Plataforma                   | Módulo  | Estado                                                        |
+| ---------------------------- | ------- | ------------------------------------------------------------- |
+| **Printify**                 | POD     | ✅ Funcional                                                  |
+| **Make.com**                 | POD     | ✅ Publicación en redes vía webhooks                          |
+| **Shopify**                  | POD     | 🔜 Conexión en progreso                                       |
+| **Google Flow**              | POD     | 🔜 Generación de imágenes y video (Veo 3.1)                   |
+| **Amazon Merch, Etsy, eBay** | POD     | 📅 Agentes de tendencia listos, integración de venta planeada |
+| **Amazon KDP**               | Digital | 📅 Cascarón preparado                                         |
+| **Hotmart**                  | Digital | 📅 Cascarón preparado                                         |
+| **AdSense / Blog**           | Digital | 📅 Cascarón preparado                                         |
+
+---
+
+## 🚀 ¿Qué hace especial esta arquitectura?
+
+- **Agentes por canal**: no hay un solo copy genérico. Cada red social tiene su propio agente experto en formato, copy y tono.
+- **Marca consistente**: un `BrandGuardian` central revisa cada diseño y texto antes de publicar, usando un perfil de marca configurable.
+- **Diseños con personalidad**: el módulo creativo genera imágenes y además añade frases, estilos y composiciones completas, no imágenes sueltas.
+- **Feedback loop cerrado**: las ventas y el engagement alimentan al `AgentFinanciero`, que trackea el avance hacia los objetivos de infraestructura.
+- **Preparado para escalar**: el módulo Digital puede activarse sin tocar el código de POD, compartiendo tendencias a través del `EventBus`.
 
 ---
 
 ## 🧰 Stack Tecnológico
 
-- **Frontend & Backend**: Next.js 15 (App Router) + TypeScript
-- **Estilos**: Tailwind CSS, componentes personalizados con diseño oscuro
-- **IA Generativa**: Google AI (Gemini) y Pollinations (fallback) para imágenes, más un motor de composición con Canvas/Sharp para añadir frases y branding
-- **Automatización**: Make.com para publicación en redes
-- **Integración POD**: Printify API
-- **Base de Datos**: PostgreSQL (Prisma) para guardar estilos, historial de publicaciones y preferencias de marca
+| Capa               | Tecnología                                                                   |
+| ------------------ | ---------------------------------------------------------------------------- |
+| Monorepo           | Turborepo + npm Workspaces                                                   |
+| App principal      | Next.js 15 (App Router) + TypeScript                                         |
+| Estilos            | Tailwind CSS + componentes reutilizables                                     |
+| IA Generativa      | Google Gemini (agentes) + Google Flow / Veo 3.1 (imágenes y video)           |
+| Automatización     | Make.com (webhooks)                                                          |
+| Integración POD    | Printify API + Shopify API                                                   |
+| Base de datos      | Firebase — Firestore (colecciones: `core`, `pod`, `digital`) + Auth + Storage|
 
 ---
 
 ## 📦 Variables de entorno
 
+Crea un archivo `apps/web/.env.local` basado en este template:
+
 ```bash
-# Printify
+# ── Firebase ───────────────────────────────────────
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+# Admin SDK (server-side / agentes)
+FIREBASE_PROJECT_ID=
+FIREBASE_CLIENT_EMAIL=
+FIREBASE_PRIVATE_KEY=
+
+# ── Google AI (Gemini + Flow) ──────────────────────
+GOOGLE_AI_API_KEY=
+
+# ── Printify (Módulo POD) ──────────────────────────
 PRINTIFY_API_KEY=
 PRINTIFY_SHOP_ID=
 
-# Google AI
-GOOGLE_AI_API_KEY=
+# ── Shopify (Módulo POD) ───────────────────────────
+SHOPIFY_STORE_URL=
+SHOPIFY_ADMIN_API_TOKEN=
 
-# Make.com
+# ── Make.com ───────────────────────────────────────
 MAKE_WEBHOOK_URL=
+MAKE_WEBHOOK_SECRET=
 
-# Redes sociales (futuro: publicación directa)
-INSTAGRAM_API_KEY=
-TIKTOK_API_KEY=
-PINTEREST_API_KEY=
-FACEBOOK_API_KEY=
+# ── Hotmart (Módulo Digital — futuro) ─────────────
+HOTMART_CLIENT_ID=
+HOTMART_CLIENT_SECRET=
+
+# ── Amazon (KDP + Merch — futuro) ─────────────────
+AMAZON_ACCESS_KEY=
+AMAZON_SECRET_KEY=
+AMAZON_ASSOCIATE_TAG=
 ```
+
+---
 
 ## 🖥️ Primeros pasos
 
-Clona el repositorio
+### 1. Clona el monorepo
+
 ```bash
 git clone https://github.com/mmnexusglobal-sys/mmnexus-hub.git
 cd mmnexus-hub
 ```
 
-Instala dependencias
+### 2. Instala dependencias
+
 ```bash
 npm install
 ```
 
-Configura variables de entorno en `.env.local`
+### 3. Configura las variables de entorno
 
-Ejecuta el servidor de desarrollo
 ```bash
-npm run dev
+cp apps/web/.env.example apps/web/.env.local
+# Edita .env.local con tus claves
 ```
 
-Abre http://localhost:3000
+### 4. Ejecuta el servidor de desarrollo
 
-## 📂 Estructura de carpetas (reflejo de la arquitectura de agentes)
-
-```text
-app/
- ├── api/
- │    ├── agents/
- │    │    ├── trend-finders/   # amazon-scout, etsy-eye, ebay-pulse, shopify-radar
- │    │    ├── creative/        # creative-director, design-maker, customization-engine
- │    │    ├── brand-guardian/  # brand-guardian
- │    │    ├── social/          # instagram-guru, tiktok-tactician, pinterest-curator, facebook-wingman
- │    │    └── publishers/      # social-publisher, printify-manager
- │    └── ...
-components/
- ├── agents/                   # Interfaz de cada agente en el dashboard
- ├── brand/                    # Selector de paletas, tipografías, frases
- └── dashboard/                # Panel de control general
-lib/
- ├── agents/                   # Lógica de negocio y comunicación entre agentes
- ├── integrations/             # Printify, Make, futuras APIs
- └── brand/                    # Definiciones de marca, estilos guardados
+```bash
+npm run dev -w apps/web
 ```
 
-## 🗺️ Hoja de ruta actualizada
+Abre [http://localhost:3000](http://localhost:3000) y accede al dashboard.
 
-**Fase 1 – MVP Multi-Agente**
-- Agentes de tendencias genérico (migrar a especializados)
-- Integración Printify y Make.com
-- Generación de imágenes básica
-- Migración a arquitectura de agentes por red social (estructura de carpetas)
-- Creative Director con frases y estilos personalizables
+---
 
-**Fase 2 – Brand Guardian y Multi-Plataforma**
-- Brand Guardian activo en cada publicación
-- Agentes de tendencias Amazon/Etsy/eBay funcionales
-- Conexión Shopifiy completa
+## 📂 Comandos útiles
 
-**Fase 3 – Publicación Directa**
-- Publicadores nativos para Instagram, TikTok, Pinterest, Facebook
-- Customization Engine (guardar estilos del usuario)
+```bash
+# Construir todos los paquetes
+npm run build
 
-**Fase 4 – Contenidos y Afiliados**
-- Amazon KDP, Google Books
-- Web de afiliados, embudos Hotmart
+# Ejecutar tests en todos los módulos
+npm run test
+
+# Ejecutar tests de un módulo específico
+npm run test -w packages/pod
+
+# Añadir una dependencia a un paquete específico
+npm install <paquete> -w packages/pod
+
+# Verificar TypeScript en todo el monorepo
+npm run typecheck
+```
+
+---
+
+## 🗺️ Hoja de ruta
+
+### 🟢 Fase 1 – Módulo POD *(en marcha)*
+
+- [x] Arquitectura multiagente base
+- [x] Integración Printify y Make.com
+- [ ] Agentes de red social por separado (Instagram, TikTok, Pinterest, Facebook)
+- [ ] BrandGuardian funcional
+- [ ] Conexión Printify ↔ Shopify
+- [ ] Feedback loop Analytics → AgentFinanciero
+
+### 🟡 Fase 2 – Módulo Digital *(cascarón)*
+
+- [ ] Estructura de carpetas y clases base en `packages/digital`
+- [ ] Placeholders de agentes KDP, Hotmart, blog
+- [ ] Colecciones Firestore del módulo `digital`
+
+### 🔵 Fase 3 – Expansión Digital real
+
+- [ ] Integración con Amazon KDP
+- [ ] Gestor de afiliados y embudos Hotmart
+- [ ] Blog con SEO y AdSense
+- [ ] LLC USA → desbloqueo de Etsy + YouTube YPP
+
+---
 
 ## 🤝 Contribuir
-Para entender la filosofía y la comunicación entre agentes, comienza leyendo `docs/AGENTS.md`.
-Aceptamos PRs que añadan nuevos agentes, mejoren el guardián de marca o implementen conectores de publicación directa.
+
+Este proyecto sigue una estricta arquitectura modular. Antes de enviar un PR, asegurate de:
+
+1. Entender cómo funcionan los agentes base en `packages/core/agents`.
+2. Respetar la regla de aislamiento de módulos: **nunca importes de `pod` en `digital` ni viceversa**.
+3. Toda comunicación cross-módulo va por el `EventBus`.
+4. Mantener cobertura de tests al agregar nuevos agentes.
+
+---
 
 ## 📄 Licencia
+
 MIT © M&M Nexus Global
