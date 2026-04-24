@@ -19,6 +19,17 @@ export class TikTokTacticianAgent extends BaseAgent {
     super('TikTokTactician');
   }
 
+  public listen() {
+    this.eventBus.on('design.approved', async (event: any) => {
+      this.log(`Recibido design.approved. Iniciando TikTok...`);
+      await this.execute({
+        baseAssetUri: event.imageUrl,
+        concept: event.niche,
+        targetAudience: 'Comunidad TikTok'
+      });
+    });
+  }
+
   public async execute(params: TikTokVideoParams): Promise<TikTokPost> {
     this.log(`Adaptando contenido para TikTok, formato 9:16: ${params.concept}`);
     

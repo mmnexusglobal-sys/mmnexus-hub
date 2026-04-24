@@ -5,3 +5,4 @@ export * from './agents/social/TikTokTacticianAgent';
 export * from './agents/social/PinterestCuratorAgent';
 export * from './agents/social/FacebookWingmanAgent';
 export * from './agents/social/TechnicalFormatterAgent';
+export * from './agents/social/init';

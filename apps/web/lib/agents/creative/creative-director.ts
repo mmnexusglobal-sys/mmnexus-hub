@@ -21,7 +21,8 @@ export class CreativeDirector {
       suggestedPhrases: [
         'Code is Poetry',
         'Future is Now',
-        'Syntax Error: Coffee Not Found'
+        'Syntax Error: Coffee Not Found',
+        'Conecta tu creatividad'
       ],
       visualStyleParams: {
         colorMood: 'Neon, high contrast, dark background',

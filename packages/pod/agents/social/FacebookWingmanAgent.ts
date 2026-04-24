@@ -17,6 +17,17 @@ export class FacebookWingmanAgent extends BaseAgent {
     super('FacebookWingman');
   }
 
+  public listen() {
+    this.eventBus.on('design.approved', async (event: any) => {
+      this.log(`Recibido design.approved. Iniciando Facebook...`);
+      await this.execute({
+        baseImageUri: event.imageUrl,
+        concept: event.niche,
+        communityContext: 'Grupo de Fans'
+      });
+    });
+  }
+
   public async execute(params: FacebookPostParams): Promise<FacebookPost> {
     this.log(`Creando post comunitario para fans de: ${params.communityContext}`);
 

@@ -59,7 +59,7 @@ export class NexusOrchestrator {
         instagram: brief.suggestedPhrases[0] || '',
         tiktok: brief.suggestedPhrases[1] || '',
         pinterest: brief.suggestedPhrases[2] || '',
-        facebook: brief.suggestedPhrases[0] || ''
+        facebook: brief.suggestedPhrases[3] || ''
       },
       niche: trendData.topNiches[0],
       timestamp: new Date().toISOString()

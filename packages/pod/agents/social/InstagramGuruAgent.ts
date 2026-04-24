@@ -18,6 +18,17 @@ export class InstagramGuruAgent extends BaseAgent {
     super('InstagramGuru');
   }
 
+  public listen() {
+    this.eventBus.on('design.approved', async (event: any) => {
+      this.log(`Recibido design.approved. Iniciando Instagram...`);
+      await this.execute({
+        baseImageUri: event.imageUrl,
+        concept: event.niche,
+        targetAudience: 'Comunidad de Instagram'
+      });
+    });
+  }
+
   public async execute(params: InstagramPostParams): Promise<InstagramPost> {
     this.log(`Generando copy y hashtags para el concepto: ${params.concept}`);
     

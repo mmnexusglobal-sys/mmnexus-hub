@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
 import { NexusOrchestrator } from '@/lib/agents/orchestrator';
+import { initSocialAgents } from '@mmnexus/pod';
+
+// Inicializar los listeners globalmente de forma segura
+initSocialAgents();
 
 export async function POST(req: Request) {
   try {

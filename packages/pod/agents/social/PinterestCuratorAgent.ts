@@ -20,6 +20,17 @@ export class PinterestCuratorAgent extends BaseAgent {
     super('PinterestCurator');
   }
 
+  public listen() {
+    this.eventBus.on('design.approved', async (event: any) => {
+      this.log(`Recibido design.approved. Iniciando Pinterest...`);
+      await this.execute({
+        baseImageUri: event.imageUrl,
+        concept: event.niche,
+        productUrl: 'https://mmnexus.com/pending' // Placeholder for now
+      });
+    });
+  }
+
   public async execute(params: PinterestPinParams): Promise<PinterestPin> {
     this.log(`Creando pin SEO-optimizado para: ${params.concept}`);
 
