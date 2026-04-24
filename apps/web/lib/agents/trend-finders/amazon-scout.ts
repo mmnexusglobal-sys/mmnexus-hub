@@ -1,5 +1,5 @@
 export interface TrendReport {
-  platform: 'Amazon';
+  platform: string;
   date: string;
   topNiches: string[];
   viralProducts: string[];
