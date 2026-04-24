@@ -1,3 +1,12 @@
+export interface DesignApprovedEvent {
+  eventType: 'design.approved';
+  designId: string;
+  imageUrl: string;
+  copyVariants: Record<'instagram' | 'tiktok' | 'pinterest' | 'facebook', string>;
+  niche: string;
+  timestamp: string;
+}
+
 export class EventBus {
   private listeners: Record<string, Function[]> = {};
 

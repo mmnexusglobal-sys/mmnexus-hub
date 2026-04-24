@@ -1,4 +1,4 @@
-import { BaseAgent } from '@mmnexus/core';
+import { BaseAgent, DesignApprovedEvent } from '@mmnexus/core';
 
 export interface InstagramPostParams {
   baseImageUri: string;
@@ -19,7 +19,7 @@ export class InstagramGuruAgent extends BaseAgent {
   }
 
   public listen() {
-    this.eventBus.on('design.approved', async (event: any) => {
+    this.eventBus.on('design.approved', async (event: DesignApprovedEvent) => {
       if (!event.imageUrl || !event.copyVariants?.instagram) {
         this.log('Payload inválido, ignorando evento (Falta imageUrl o copyVariant.instagram)');
         return;

@@ -1,4 +1,4 @@
-import { BaseAgent } from '@mmnexus/core';
+import { BaseAgent, DesignApprovedEvent } from '@mmnexus/core';
 
 export interface FacebookPostParams {
   baseImageUri: string;
@@ -18,7 +18,7 @@ export class FacebookWingmanAgent extends BaseAgent {
   }
 
   public listen() {
-    this.eventBus.on('design.approved', async (event: any) => {
+    this.eventBus.on('design.approved', async (event: DesignApprovedEvent) => {
       if (!event.imageUrl || !event.copyVariants?.facebook) {
         this.log('Payload inválido, ignorando evento (Falta imageUrl o copyVariant.facebook)');
         return;

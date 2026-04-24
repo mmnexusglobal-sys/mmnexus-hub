@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { BrandProfile, BrandSettings } from '@mmnexus/core';
-import { db } from '../../lib/firebase';
+import { db } from '@/lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 export async function GET() {
