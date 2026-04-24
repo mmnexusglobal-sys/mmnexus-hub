@@ -12,12 +12,7 @@ export * from './creative/creative-director';
 export * from './creative/design-maker';
 export * from './creative/customization-engine';
 
-// Social Agents
-export * from './social/instagram-guru';
-export * from './social/tiktok-tactician';
-export * from './social/pinterest-curator';
-export * from './social/facebook-wingman';
-export * from './social/technical-formatter';
+// Social Agents ahora viven en @mmnexus/pod
 
 // Publisher Agents
 export * from './publishers/social-publisher';
