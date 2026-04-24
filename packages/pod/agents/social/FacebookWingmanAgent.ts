@@ -1,3 +1,5 @@
+import { BaseAgent } from '@mmnexus/core';
+
 export interface FacebookPostParams {
   baseImageUri: string;
   concept: string;
@@ -10,17 +12,25 @@ export interface FacebookPost {
   text: string;
 }
 
-export class FacebookWingman {
-  /**
-   * Crafts conversational posts suitable for Facebook pages and groups.
-   */
-  public async createPost(params: FacebookPostParams): Promise<FacebookPost> {
+export class FacebookWingmanAgent extends BaseAgent {
+  constructor() {
+    super('FacebookWingman');
+  }
+
+  public async execute(params: FacebookPostParams): Promise<FacebookPost> {
+    this.log(`Creando post comunitario para fans de: ${params.communityContext}`);
+
     const text = `¡Hola comunidad! 👋\n\nAcabamos de lanzar este nuevo diseño centrado en ${params.concept}. Creemos que a los fans de ${params.communityContext} les encantará.\n\n¿Qué opinan? Déjennos sus comentarios abajo. 👇✨`;
     
-    return {
-      format: '1.91:1', // Standard Facebook link/image format
+    const postData: FacebookPost = {
+      format: '1.91:1',
       imageUri: params.baseImageUri,
       text
     };
+
+    this.eventBus.emit('social:facebook_ready', postData);
+    this.log('Post de Facebook generado exitosamente.');
+
+    return postData;
   }
 }

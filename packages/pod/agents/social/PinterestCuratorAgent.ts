@@ -1,3 +1,5 @@
+import { BaseAgent } from '@mmnexus/core';
+
 export interface PinterestPinParams {
   baseImageUri: string;
   concept: string;
@@ -13,18 +15,26 @@ export interface PinterestPin {
   boardName: string;
 }
 
-export class PinterestCurator {
-  /**
-   * Generates elongated pins (2:3), SEO-rich descriptions, and CTA for Pinterest.
-   */
-  public async createPin(params: PinterestPinParams): Promise<PinterestPin> {
-    return {
+export class PinterestCuratorAgent extends BaseAgent {
+  constructor() {
+    super('PinterestCurator');
+  }
+
+  public async execute(params: PinterestPinParams): Promise<PinterestPin> {
+    this.log(`Creando pin SEO-optimizado para: ${params.concept}`);
+
+    const postData: PinterestPin = {
       format: '2:3',
-      imageUri: params.baseImageUri, // Should ideally be a 2:3 cropped/formatted image
+      imageUri: params.baseImageUri,
       title: `Ideas de diseño: ${params.concept}`,
       description: `Descubre este increíble diseño de ${params.concept}. Perfecto para regalar o para tu estilo diario. Haz clic para ver más detalles y conseguir el tuyo. #Aesthetic #Design`,
       destinationLink: params.productUrl,
       boardName: `${params.concept} Inspiration`
     };
+
+    this.eventBus.emit('social:pinterest_ready', postData);
+    this.log('Pin de Pinterest generado exitosamente.');
+
+    return postData;
   }
 }
