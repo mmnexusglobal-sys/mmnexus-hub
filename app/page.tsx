@@ -10,6 +10,8 @@ import GeneradorIA from "@/components/dashboard/GeneradorIA";
 import RedesSociales from "@/components/dashboard/RedesSociales";
 import Galeria from "@/components/dashboard/Galeria";
 import CargaMasiva from "@/components/dashboard/CargaMasiva";
+import { GenerationForm } from "@/components/dashboard/GenerationForm";
+import { BrandRulesConfig } from "@/components/brand/BrandRulesConfig";
 
 const SidebarItem = ({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active?: boolean, onClick: () => void }) => (
   <button 
@@ -144,6 +146,7 @@ export default function Dashboard() {
           </div>
           <SidebarItem icon={<Layers />} label="Carga Masiva" active={activeTab === "Carga Masiva"} onClick={() => setActiveTab("Carga Masiva")} />
           <SidebarItem icon={<Share2 />} label="Redes Sociales" active={activeTab === "Redes Sociales"} onClick={() => setActiveTab("Redes Sociales")} />
+          <SidebarItem icon={<Wand2 />} label="Orquestador IA" active={activeTab === "Orquestador IA"} onClick={() => setActiveTab("Orquestador IA")} />
           <SidebarItem icon={<Settings />} label="Configuracion" active={activeTab === "Configuracion"} onClick={() => setActiveTab("Configuracion")} />
         </nav>
       </aside>
@@ -159,6 +162,10 @@ export default function Dashboard() {
           <CargaMasiva />
         ) : activeTab === "Galeria" ? (
           <Galeria />
+        ) : activeTab === "Orquestador IA" ? (
+          <GenerationForm />
+        ) : activeTab === "Configuracion" ? (
+          <BrandRulesConfig />
         ) : activeTab === "Dashboard" ? (
           <>
             <header className="flex justify-between items-center mb-12">
