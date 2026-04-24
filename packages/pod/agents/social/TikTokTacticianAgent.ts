@@ -21,6 +21,10 @@ export class TikTokTacticianAgent extends BaseAgent {
 
   public listen() {
     this.eventBus.on('design.approved', async (event: any) => {
+      if (!event.imageUrl || !event.copyVariants?.tiktok) {
+        this.log('Payload inválido, ignorando evento (Falta imageUrl o copyVariant.tiktok)');
+        return;
+      }
       this.log(`Recibido design.approved. Iniciando TikTok...`);
       await this.execute({
         baseAssetUri: event.imageUrl,

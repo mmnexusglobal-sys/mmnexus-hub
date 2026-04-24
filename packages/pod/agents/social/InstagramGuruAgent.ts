@@ -20,6 +20,10 @@ export class InstagramGuruAgent extends BaseAgent {
 
   public listen() {
     this.eventBus.on('design.approved', async (event: any) => {
+      if (!event.imageUrl || !event.copyVariants?.instagram) {
+        this.log('Payload inválido, ignorando evento (Falta imageUrl o copyVariant.instagram)');
+        return;
+      }
       this.log(`Recibido design.approved. Iniciando Instagram...`);
       await this.execute({
         baseImageUri: event.imageUrl,
