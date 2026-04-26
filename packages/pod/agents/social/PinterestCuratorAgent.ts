@@ -36,20 +36,55 @@ export class PinterestCuratorAgent extends BaseAgent {
   }
 
   public async execute(params: PinterestPinParams): Promise<PinterestPin> {
-    this.log(`Creando pin SEO-optimizado para: ${params.concept}`);
+    this.log(`Generando pin para Pinterest (Vertical). Concepto: ${params.concept}`);
+    
+    // 1. Llamada a la API para generar el asset nativo del canal
+    let imageUrl = params.baseImageUri; // Fallback a la imagen cruda
+    try {
+      const response = await fetch('http://localhost:3000/api/ai/channel-asset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          channel: 'PINTEREST',
+          concept: params.concept,
+          productTitle: `Idea de ${params.concept}`,
+          basePrompt: params.baseImageUri,
+          visualDirection: "Fotografía vertical aesthetic, ideal para un tablero de inspiración. Composición limpia con espacio para texto.",
+          assetBrief: "Crear una imagen 2:3 o 9:16 altamente pineable, enfocada en descubrimiento visual y estética flatlay o lifestyle.",
+          contentFormat: "IMAGE"
+        })
+      });
 
-    const postData: PinterestPin = {
+      if (response.ok) {
+        const json = await response.json();
+        if (json.success && json.data?.url) {
+          imageUrl = json.data.url;
+          this.log(`Asset de Pinterest derivado exitosamente: ${imageUrl}`);
+        }
+      } else {
+        this.log(`Error al derivar asset para Pinterest (HTTP ${response.status}). Usando fallback.`);
+      }
+    } catch (error) {
+      this.log(`Error en la red al llamar a channel-asset: ${error}. Usando fallback.`);
+    }
+
+    // 2. Generación del Copy y Keywords
+    const title = `Inspiración: ${params.concept}`;
+    const description = `Idea increíble de diseño inspirado en ${params.concept}. Explora esta y más ideas en nuestro catálogo. ${params.concept} Inspiration #${params.concept.replace(/\s+/g, '')}`;
+    
+    const pinData: PinterestPin = {
       format: '2:3',
-      imageUri: params.baseImageUri,
-      title: `Ideas de diseño: ${params.concept}`,
-      description: `Descubre este increíble diseño de ${params.concept}. Perfecto para regalar o para tu estilo diario. Haz clic para ver más detalles y conseguir el tuyo. #Aesthetic #Design`,
-      destinationLink: params.productUrl,
+      imageUri: imageUrl,
+      title,
+      description,
+      destinationLink: 'https://mmnexus.global',
       boardName: `${params.concept} Inspiration`
     };
 
-    this.eventBus.emit('social:pinterest_ready', postData);
-    this.log('Pin de Pinterest generado exitosamente.');
+    // Emitir el evento de que el post de Pinterest está listo
+    this.eventBus.emit('social:pinterest_ready', pinData);
+    this.log('Pin de Pinterest generado exitosamente con asset derivado.');
 
-    return postData;
+    return pinData;
   }
 }

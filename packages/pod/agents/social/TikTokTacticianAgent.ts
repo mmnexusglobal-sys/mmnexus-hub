@@ -35,20 +35,52 @@ export class TikTokTacticianAgent extends BaseAgent {
   }
 
   public async execute(params: TikTokVideoParams): Promise<TikTokPost> {
-    this.log(`Adaptando contenido para TikTok, formato 9:16: ${params.concept}`);
+    this.log(`Generando cover vertical y hook para TikTok. Concepto: ${params.concept}`);
     
-    const caption = `POV: Encontraste el diseño perfecto de ${params.concept}. 🔥\n\nLink en bio.`;
+    // 1. Llamada a la API para generar el asset nativo del canal
+    let imageUrl = params.baseAssetUri; // Fallback a la imagen cruda
+    try {
+      const response = await fetch('http://localhost:3000/api/ai/channel-asset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          channel: 'TIKTOK',
+          concept: params.concept,
+          productTitle: `Trending: ${params.concept}`,
+          basePrompt: params.baseAssetUri,
+          visualDirection: "Imagen súper llamativa en formato vertical 9:16. Colores vibrantes y composición enfocada en atrapar la atención (hook-first).",
+          assetBrief: "Crear un cover impactante para un video corto, estilo viral de TikTok.",
+          contentFormat: "VIDEO_COVER" // o IMAGE dependiendo de tu contrato
+        })
+      });
+
+      if (response.ok) {
+        const json = await response.json();
+        if (json.success && json.data?.url) {
+          imageUrl = json.data.url;
+          this.log(`Asset cover de TikTok derivado exitosamente: ${imageUrl}`);
+        }
+      } else {
+        this.log(`Error al derivar asset para TikTok (HTTP ${response.status}). Usando fallback.`);
+      }
+    } catch (error) {
+      this.log(`Error en la red al llamar a channel-asset: ${error}. Usando fallback.`);
+    }
+
+    // 2. Generación del Copy / Guion
+    const caption = `POV: Encontraste el diseño definitivo de ${params.concept}. 🔥\n\nLink en bio.`;
     
     const postData: TikTokPost = {
       format: '9:16',
-      videoOrImageUri: params.baseAssetUri, 
+      videoOrImageUri: imageUrl,
       caption,
       suggestedAudio: 'Trending TikTok Sound #1',
       hashtags: ['#fyp', '#viral', `#${params.concept.replace(/\s+/g, '')}`, '#streetwear']
     };
 
+    // Emitir el evento de que el video/script de TikTok está listo
     this.eventBus.emit('social:tiktok_ready', postData);
-    this.log('Contenido para TikTok generado exitosamente.');
+    this.log('Cover de TikTok generado exitosamente con asset derivado.');
 
     return postData;
   }
