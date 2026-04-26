@@ -1,0 +1,55 @@
+{
+  "date": "2026-04-22",
+  "niches": [
+    {
+      "name": "Eco-Futurismo y Sostenibilidad Visual",
+      "description": "Diseños que mezclan tecnología avanzada con elementos botánicos (circuitos que parecen raíces, ciudades flotantes verdes).",
+      "idealDesigns": [
+        "Bio-Sphere"
+      ],
+      "recommendedProducts": [],
+      "emergingSubNiche": null
+    },
+    {
+      "name": "Minimalismo Técnico (Blueprint Art)",
+      "description": "Planos técnicos de objetos cotidianos o futuristas con estética limpia (fondo azul o negro con líneas cian).",
+      "idealDesigns": [
+        "Tech-Drone"
+      ],
+      "recommendedProducts": [
+        "Camisetas",
+        "Pósteres de Papel de Archivo",
+        "Fundas de Laptop Mate"
+      ],
+      "emergingSubNiche": null
+    },
+    {
+      "name": "Geopolítica Regional Tech",
+      "description": "Mapas estilizados de centros tecnológicos (como el de Uruguay). Interés creciente en el 'orgullo local tecnológico'.",
+      "idealDesigns": [],
+      "recommendedProducts": [],
+      "emergingSubNiche": null
+    }
+  ],
+  "viralTrends": [
+    {
+      "concept": "Green Tech Aesthetic",
+      "description": "Pico de búsquedas en Pinterest que impulsa el nicho de Eco-Futurismo y Sostenibilidad Visual."
+    },
+    {
+      "concept": "satisfying engineering videos",
+      "description": "Vídeos en TikTok que impulsan la venta de camisetas con estilo Minimalismo Técnico."
+    }
+  ],
+  "socialSignals": {
+    "opportunity": "Aprovechar la visibilidad en Pinterest sobre 'Green Tech Aesthetic' y la popularidad de los vídeos de 'satisfying engineering' en TikTok para diseños de Eco-Futurismo y Minimalismo Técnico.",
+    "signals": [
+      "Pico de búsquedas en Pinterest sobre 'Green Tech Aesthetic'",
+      "Viralidad de vídeos de 'satisfying engineering' en TikTok"
+    ]
+  },
+  "highConversionKeywords": [
+    "Green Tech Aesthetic",
+    "orgullo local tecnológico"
+  ]
+}
