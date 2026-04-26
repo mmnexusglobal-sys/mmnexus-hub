@@ -12,6 +12,7 @@ import Galeria from "@/components/dashboard/Galeria";
 import CargaMasiva from "@/components/dashboard/CargaMasiva";
 import { GenerationForm } from "@/components/dashboard/GenerationForm";
 import { BrandRulesConfig } from "@/components/brand/BrandRulesConfig";
+import CampaignManager from "@/components/dashboard/CampaignManager";
 
 const SidebarItem = ({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active?: boolean, onClick: () => void }) => (
   <button 
@@ -126,18 +127,24 @@ export default function Dashboard() {
     <div className="min-h-screen bg-slate-950 text-slate-50 flex font-sans selection:bg-indigo-500/30">
       
       {/* Sidebar */}
-      <aside className="w-64 border-r border-white/10 bg-slate-950 flex-col p-6 hidden md:flex">
+      <aside className="w-64 border-r border-white/10 bg-slate-950 flex flex-col p-6 hidden md:flex">
         <div className="flex items-center gap-3 mb-12">
-          <div className="w-10 h-10 rounded-xl bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-            <Wand2 className="w-5 h-5 text-white" />
+          <div className="relative w-10 h-10 rounded-xl bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 overflow-hidden">
+            <Wand2 className="w-5 h-5 text-white absolute" />
+            <img 
+              src="/logo.png" 
+              alt="MMNexus" 
+              className="w-full h-full object-cover relative z-10" 
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
           </div>
           <span className="font-bold text-xl tracking-tight">MMNexus</span>
         </div>
 
-        <nav className="flex flex-col gap-2">
+        <nav className="flex flex-col gap-2 flex-1">
           <SidebarItem icon={<LayoutDashboard />} label="Dashboard" active={activeTab === "Dashboard"} onClick={() => setActiveTab("Dashboard")} />
           <SidebarItem icon={<ImageIcon />} label="Generador IA" active={activeTab === "Generador IA"} onClick={() => setActiveTab("Generador IA")} />
-          <SidebarItem icon={<Database />} label="Galeria" active={activeTab === "Galeria"} onClick={() => setActiveTab("Galeria")} />
+          <SidebarItem icon={<Database />} label="Campañas Activas" active={activeTab === "Campañas Activas"} onClick={() => setActiveTab("Campañas Activas")} />
           <SidebarItem icon={<Shirt />} label="Printify Products" active={activeTab === "Printify Products"} onClick={() => setActiveTab("Printify Products")} />
           <SidebarItem icon={<ShoppingBag />} label="E-Commerce" active={activeTab === "E-Commerce"} onClick={() => setActiveTab("E-Commerce")} />
           
@@ -149,6 +156,16 @@ export default function Dashboard() {
           <SidebarItem icon={<Wand2 />} label="Orquestador IA" active={activeTab === "Orquestador IA"} onClick={() => setActiveTab("Orquestador IA")} />
           <SidebarItem icon={<Settings />} label="Configuracion" active={activeTab === "Configuracion"} onClick={() => setActiveTab("Configuracion")} />
         </nav>
+
+        {/* Developer Credit & Version */}
+        <div className="mt-auto pt-6 border-t border-white/10">
+          <p className="text-[10px] text-slate-500 text-center leading-tight">
+            Desarrollado por <span className="font-semibold text-slate-400">M&M Nexus Team</span>
+          </p>
+          <p className="text-[10px] text-slate-500 text-center mt-1">
+            v0.1.0
+          </p>
+        </div>
       </aside>
 
       {/* Main Content */}
@@ -160,8 +177,8 @@ export default function Dashboard() {
           <RedesSociales decision={decision} imageUrl={imageUrl} />
         ) : activeTab === "Carga Masiva" ? (
           <CargaMasiva />
-        ) : activeTab === "Galeria" ? (
-          <Galeria />
+        ) : activeTab === "Campañas Activas" ? (
+          <CampaignManager />
         ) : activeTab === "Orquestador IA" ? (
           <GenerationForm />
         ) : activeTab === "Configuracion" ? (

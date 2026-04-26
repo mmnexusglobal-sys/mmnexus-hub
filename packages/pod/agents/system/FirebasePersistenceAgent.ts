@@ -62,4 +62,9 @@ export class FirebasePersistenceAgent extends BaseAgent {
       })
     });
   }
+
+  public async execute(): Promise<any> {
+    // Este agente es pasivo (reacciona a eventos), no tiene ejecución imperativa
+    return {};
+  }
 }
