@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  transpilePackages: ["@mmnexus/core", "@mmnexus/digital", "@mmnexus/pod"],
 };
 
 export default nextConfig;
