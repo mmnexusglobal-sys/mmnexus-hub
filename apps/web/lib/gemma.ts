@@ -1,16 +1,12 @@
 // lib/gemma.ts
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-let genAI: GoogleGenerativeAI | null = null;
-
-export const getGemmaModel = (modelName: string = 'gemini-2.5-flash') => {
-  if (!genAI) {
-    const apiKey = process.env.GOOGLE_AI_API_KEY;
-    if (!apiKey) {
-      console.warn("GOOGLE_AI_API_KEY is not defined in the environment variables.");
-    }
-    genAI = new GoogleGenerativeAI(apiKey || '');
-  }
+const apiKey = process.env.GOOGLE_AI_API_KEY;
+if (!apiKey) {
+  console.warn("GOOGLE_AI_API_KEY is not defined in the environment variables.");
+}
+const genAI = new GoogleGenerativeAI(apiKey || '');
+export const getGemmaModel = (modelName: string = 'gemma-4-31b-it') => {
   return genAI.getGenerativeModel({ model: modelName });
 };
 

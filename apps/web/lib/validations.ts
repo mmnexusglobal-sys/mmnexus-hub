@@ -1,42 +1,7 @@
 import { z } from "zod";
 
-export const DecisionSchema = z.object({
-  productType: z.string().min(1, "productType is required"),
-  blueprintId: z.union([z.string(), z.number()]).optional(),
-  reason: z.string().min(1, "reason is required"),
-  shopifyTitle: z.string().min(1, "shopifyTitle is required"),
-  socialCopy: z.string().min(1, "socialCopy is required"),
-  seoTags: z.array(z.string()).min(1, "at least one seoTag is required"),
-  imagePrompt: z.string().optional(),
-});
-
-export type DecisionData = z.infer<typeof DecisionSchema>;
-
-export const NicheSchema = z.object({
-  name: z.string(),
-  description: z.string(),
-  idealDesigns: z.array(z.string()),
-  recommendedProducts: z.array(z.string()),
-  emergingSubNiche: z.string().optional(),
-});
-
-export const ViralTrendSchema = z.object({
-  concept: z.string(),
-  description: z.string(),
-});
-
-export const FullTrendReportSchema = z.object({
-  date: z.string(),
-  niches: z.array(NicheSchema),
-  viralTrends: z.array(ViralTrendSchema).optional(),
-  socialSignals: z.object({
-    opportunity: z.string().optional(),
-    signals: z.array(z.string()).optional()
-  }).optional(),
-  highConversionKeywords: z.array(z.string()).optional(),
-});
-
-export type FullTrendReportData = z.infer<typeof FullTrendReportSchema>;
+export { DecisionSchema } from "@/lib/validations/ai";
+export type { DecisionDto as DecisionData } from "@/lib/validations/ai";
 
 export const TrendReportSchema = z.object({
   topic: z.string(),
@@ -72,3 +37,29 @@ export const PublishResultSchema = z.object({
 });
 
 export type PublishResultData = z.infer<typeof PublishResultSchema>;
+
+export const NicheSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  idealDesigns: z.array(z.string()),
+  recommendedProducts: z.array(z.string()),
+  emergingSubNiche: z.string().optional(),
+});
+
+export const ViralTrendSchema = z.object({
+  concept: z.string(),
+  description: z.string(),
+});
+
+export const FullTrendReportSchema = z.object({
+  date: z.string(),
+  niches: z.array(NicheSchema),
+  viralTrends: z.array(ViralTrendSchema).optional(),
+  socialSignals: z.object({
+    opportunity: z.string().optional(),
+    signals: z.array(z.string()).optional()
+  }).optional(),
+  highConversionKeywords: z.array(z.string()).optional(),
+});
+
+export type FullTrendReportData = z.infer<typeof FullTrendReportSchema>;

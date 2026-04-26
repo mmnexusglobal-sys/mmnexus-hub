@@ -1,12 +1,54 @@
-import { env } from "@/lib/server/env";
+import { getGemmaModel } from "@/lib/gemma";
 
 export interface GoogleImageResult {
   url: string;
   error?: string;
 }
 
+export interface GenerateGoogleTextOptions {
+  primaryModel?: string;
+  fallbackModel?: string;
+}
+
+export interface GoogleTextResult {
+  text: string;
+  model: string;
+  fallbackUsed: boolean;
+}
+
+export async function generateGoogleText(
+  prompt: string,
+  options: GenerateGoogleTextOptions = {},
+): Promise<GoogleTextResult> {
+  const primaryModel = options.primaryModel ?? "gemma-4-31b-it";
+  const fallbackModel = options.fallbackModel;
+  const models = fallbackModel && fallbackModel !== primaryModel
+    ? [primaryModel, fallbackModel]
+    : [primaryModel];
+
+  let lastError: unknown;
+
+  for (const [index, modelName] of models.entries()) {
+    try {
+      const model = getGemmaModel(modelName);
+      const result = await model.generateContent(prompt);
+
+      return {
+        text: result.response.text(),
+        model: modelName,
+        fallbackUsed: index > 0,
+      };
+    } catch (error: unknown) {
+      lastError = error;
+      console.warn(`Google AI text generation failed with model ${modelName}:`, error);
+    }
+  }
+
+  throw lastError instanceof Error ? lastError : new Error("Google AI text generation failed");
+}
+
 export async function generateGoogleImage(prompt: string): Promise<GoogleImageResult> {
-  const apiKey = env.GOOGLE_AI_API_KEY;
+  const apiKey = process.env.GOOGLE_AI_API_KEY;
   if (!apiKey) {
     throw new Error("GOOGLE_AI_API_KEY is not set.");
   }
