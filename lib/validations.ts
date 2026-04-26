@@ -37,3 +37,29 @@ export const PublishResultSchema = z.object({
 });
 
 export type PublishResultData = z.infer<typeof PublishResultSchema>;
+
+export const NicheSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  idealDesigns: z.array(z.string()),
+  recommendedProducts: z.array(z.string()),
+  emergingSubNiche: z.string().optional(),
+});
+
+export const ViralTrendSchema = z.object({
+  concept: z.string(),
+  description: z.string(),
+});
+
+export const FullTrendReportSchema = z.object({
+  date: z.string(),
+  niches: z.array(NicheSchema),
+  viralTrends: z.array(ViralTrendSchema).optional(),
+  socialSignals: z.object({
+    opportunity: z.string().optional(),
+    signals: z.array(z.string()).optional()
+  }).optional(),
+  highConversionKeywords: z.array(z.string()).optional(),
+});
+
+export type FullTrendReportData = z.infer<typeof FullTrendReportSchema>;
