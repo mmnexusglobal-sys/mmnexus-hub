@@ -65,6 +65,8 @@ export function BrandRulesConfig() {
             <input 
               id="brandName"
               type="text" 
+              title="Nombre de la marca"
+              placeholder="Ej: CyberNexus"
               value={settings.brandName}
               onChange={(e) => setSettings({...settings, brandName: e.target.value})}
               className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/50 transition-colors"
@@ -89,6 +91,8 @@ export function BrandRulesConfig() {
                 <input 
                   id="primaryColorText"
                   type="text" 
+                  title="Color primario en Hexadecimal"
+                  placeholder="#000000"
                   value={settings.colorPalette.primary}
                   onChange={(e) => setSettings({
                     ...settings, 
@@ -115,6 +119,8 @@ export function BrandRulesConfig() {
                 <input 
                   id="accentColorText"
                   type="text" 
+                  title="Color de acento en Hexadecimal"
+                  placeholder="#000000"
                   value={settings.colorPalette.accent}
                   onChange={(e) => setSettings({
                     ...settings, 

@@ -127,7 +127,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-slate-950 text-slate-50 flex font-sans selection:bg-indigo-500/30">
       
       {/* Sidebar */}
-      <aside className="w-64 border-r border-white/10 bg-slate-950 flex flex-col p-6 hidden md:flex">
+      <aside className="w-64 border-r border-white/10 bg-slate-950 hidden md:flex flex-col p-6">
         <div className="flex items-center gap-3 mb-12">
           <div className="relative w-10 h-10 rounded-xl bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 overflow-hidden">
             <Wand2 className="w-5 h-5 text-white absolute" />

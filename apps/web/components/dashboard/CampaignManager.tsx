@@ -42,6 +42,7 @@ export default function CampaignManager() {
         </div>
         <button 
           onClick={fetchCampaigns}
+          aria-label="Refresh campaigns"
           className="bg-white/5 hover:bg-white/10 text-white p-2 rounded-lg transition-colors border border-white/10"
         >
           <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
@@ -112,7 +113,7 @@ export default function CampaignManager() {
                   </h4>
                   {camp.socialAssets?.pinterest ? (
                     <div className="space-y-3">
-                      <img src={camp.socialAssets.pinterest.imageUri} className="w-full aspect-[2/3] object-cover rounded-lg" alt="Pin Mockup" />
+                      <img src={camp.socialAssets.pinterest.imageUri} className="w-full aspect-2/3 object-cover rounded-lg" alt="Pin Mockup" />
                       <div>
                         <p className="text-sm font-bold text-slate-200">{camp.socialAssets.pinterest.title}</p>
                         <p className="text-xs text-slate-400 mt-1 line-clamp-3">{camp.socialAssets.pinterest.description}</p>
@@ -131,7 +132,7 @@ export default function CampaignManager() {
                   </h4>
                   {camp.socialAssets?.tiktok ? (
                     <div className="space-y-3">
-                      <img src={camp.socialAssets.tiktok.videoOrImageUri} className="w-full aspect-[9/16] object-cover rounded-lg" alt="TikTok Cover" />
+                      <img src={camp.socialAssets.tiktok.videoOrImageUri} className="w-full aspect-9/16 object-cover rounded-lg" alt="TikTok Cover" />
                       <div className="bg-black/30 p-2 rounded">
                         <p className="text-xs text-slate-300 mb-1 font-semibold">{camp.socialAssets.tiktok.caption}</p>
                         <p className="text-[10px] text-cyan-300">🎵 {camp.socialAssets.tiktok.suggestedAudio}</p>
