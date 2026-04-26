@@ -1,5 +1,5 @@
-import type { Decision } from "@/lib/domain/decision";
-import type { SocialChannel, SocialAsset, SocialProvider } from "@/lib/domain/publish";
+import type { Decision } from "./decision";
+import type { SocialChannel, SocialAsset, SocialProvider } from "./publish";
 
 export type ChannelContentFormat =
   | "FEED_IMAGE"

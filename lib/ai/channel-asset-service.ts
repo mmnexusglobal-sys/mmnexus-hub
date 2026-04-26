@@ -1,5 +1,5 @@
-import type { GenerateChannelAssetRequest, GenerateChannelAssetResult } from "@/lib/domain/channel-asset";
-import { generateImageService } from "@/lib/ai/image-service";
+import type { GenerateChannelAssetRequest, GenerateChannelAssetResult } from "../domain/channel-asset";
+import { generateImageService } from "../ai/image-service";
 
 function resolveDimensions(channel: GenerateChannelAssetRequest["channel"]) {
   switch (channel) {

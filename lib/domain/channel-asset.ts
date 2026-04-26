@@ -1,5 +1,5 @@
-import type { ChannelContentFormat } from "@/lib/domain/campaign";
-import type { SocialChannel, SocialAsset } from "@/lib/domain/publish";
+import type { ChannelContentFormat } from "./campaign";
+import type { SocialChannel, SocialAsset } from "./publish";
 
 export interface GenerateChannelAssetRequest {
   channel: SocialChannel;

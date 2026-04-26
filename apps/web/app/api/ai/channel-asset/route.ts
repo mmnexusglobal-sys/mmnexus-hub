@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { generateChannelAssetService } from "@/lib/ai/channel-asset-service";
-import type { GenerateChannelAssetRequest } from "@/lib/domain/channel-asset";
+import { generateChannelAssetService } from "../../../../../../lib/ai/channel-asset-service";
+import type { GenerateChannelAssetRequest } from "../../../../../../lib/domain/channel-asset";
 
 export async function POST(request: Request) {
   try {
